@@ -1,5 +1,6 @@
 package at.reisisoft;
 
+import at.reisisoft.concurrent.ArchiveCallable;
 import at.reisisoft.concurrent.DailyBuildsCallable;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -10,13 +11,11 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Created by Florian on 22.06.2015.
@@ -51,13 +50,20 @@ public class Download implements AutoCloseable {
     }
 
     public Collection<Entry> getAllAvailableDownloads(Architecture a, OS os) {
-        List<Future<Collection<Entry>>> futureList = new LinkedList<>();
-        futureList.add(getDailyBuilds(a, os));
-        return futureList.stream().map(Utils.mapFuture()).collect(Utils.collectCollectionsToSingleCollection());
+        Stream<ListenableFuture<Collection<Entry>>> s1 = Stream.of(getDailyBuilds(a, os));
+        Stream<ListenableFuture<Collection<ListenableFuture<Collection<Entry>>>>> s2 = Stream.of(getArchiveDownloads(a, os));
+        Stream<ListenableFuture<Collection<Entry>>> s3 = s2.map(Utils.mapFuture()).collect(Utils.collectCollectionToStream());
+        Stream<ListenableFuture<Collection<Entry>>> s4 = Stream.concat(s1, s3);
+
+        return s4.map(Utils.mapFuture()).collect(Utils.collectCollectionsToSingleCollection());
     }
 
     private ListenableFuture<Collection<Entry>> getDailyBuilds(Architecture a, OS os) {
         return executor.submit(new DailyBuildsCallable(os, a));
+    }
+
+    private ListenableFuture<Collection<ListenableFuture<Collection<Entry>>>> getArchiveDownloads(Architecture a, OS os) {
+        return executor.submit(new ArchiveCallable(a, os));
     }
 
     @Override
