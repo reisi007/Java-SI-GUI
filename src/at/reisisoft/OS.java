@@ -29,8 +29,25 @@ public enum OS {
                 return "RPM";
             case LinuxDeb:
                 return "DEB";
+            case Win_EXE:
+                return Win.toString();
             default:
                 return super.toString();
+        }
+    }
+
+    /**
+     * @return The name used in the daily builds
+     */
+    public String getOSShortName() {
+        switch (this) {
+            case LinuxDeb:
+            case LinuxRPM:
+                return "Linux";
+            case Win_EXE:
+                return Win.toString();
+            default:
+                return toString();
         }
     }
 }

@@ -1,25 +1,17 @@
-package at.reisisoft.concurrent;
-
-import at.reisisoft.Download;
+package at.reisisoft;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Florian on 23.06.2015.
  */
-public class VersionExtractor implements Callable<Collection<String>> {
-    private String url;
+public class Downloads {
 
-    public VersionExtractor(String url) {
-        this.url = url;
-    }
-
-    @Override
-    public Collection<String> call() throws Exception {
+    public static Collection<String> getLibOVersions(String url) {
         try {
             Collection<String> collection = new LinkedList<>();
             String html = Download.downloadFromUrl(url);
@@ -31,7 +23,7 @@ public class VersionExtractor implements Callable<Collection<String>> {
             return collection;
         } catch (Exception e) {
             e.printStackTrace();
-            throw e;
+            return Collections.emptyList();
         }
     }
 }

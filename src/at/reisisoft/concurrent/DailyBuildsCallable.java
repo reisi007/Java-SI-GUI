@@ -28,7 +28,8 @@ public class DailyBuildsCallable implements Callable<Collection<Download.Entry>>
 
     @Override
     public Collection<Download.Entry> call() throws Exception {
-
+        if (os == OS.Win_EXE)
+            return Collections.emptyList();
         String html = Download.downloadFromUrl(Constants.DEV_BUILD_URL);
         Collection e = new LinkedList<>();
         String[] versions = html.split("/icons/folder.gif");
@@ -48,12 +49,13 @@ public class DailyBuildsCallable implements Callable<Collection<Download.Entry>>
     public Collection<Download.Entry> getThinderBoxCallable(String base, String branchUrl) {
         try {
             String html = Download.downloadFromUrl(base + branchUrl);
-            Pattern p = Pattern.compile(os + "(\\w|_|-)+?" + a + "@[0-9]+?.*?\\/");
+
+            Pattern p = Pattern.compile(os.getOSShortName() + "(\\w|_|-)+?" + a + "@[0-9]+?.*?\\/");
             Collection<String> thinderboxes = new LinkedList<>();
             Matcher m = p.matcher(html);
             while (m.find() && m.find())
                 thinderboxes.add(m.group());
-            Stream<String> stream = thinderboxes.parallelStream().filter(t -> new Download.DownloadAvailablePredicate(os, branchUrl.substring(0, branchUrl.length() - 1)).test(base + branchUrl + t + "current/"));
+            Stream<String> stream = thinderboxes.parallelStream().filter(t -> new DownloadAvailablePredicate(os, branchUrl.substring(0, branchUrl.length() - 1)).test(base + branchUrl + t + "current/"));
             return stream.map(u -> new Download.Entry(branchUrl + u.substring(0, u.length() - 1), base + branchUrl + u + "current/", a, os)).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();

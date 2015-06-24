@@ -1,7 +1,10 @@
 package at.reisisoft;
 
+import at.reisisoft.collection.CollectionHashMap;
 import at.reisisoft.concurrent.ArchiveCallable;
 import at.reisisoft.concurrent.DailyBuildsCallable;
+import at.reisisoft.concurrent.StableCallable;
+import at.reisisoft.concurrent.TestingCallable;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -11,10 +14,10 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -38,7 +41,7 @@ public class Download implements AutoCloseable {
     }
 
     public Download() {
-        this(Executors.newFixedThreadPool(8));
+        this(Executors.newFixedThreadPool(10));
     }
 
     public Download(ExecutorService executorService) {
@@ -49,51 +52,45 @@ public class Download implements AutoCloseable {
         executor = executorService;
     }
 
-    public Collection<Entry> getAllAvailableDownloads(Architecture a, OS os) {
-        Stream<ListenableFuture<Collection<Entry>>> s1 = Stream.of(getDailyBuilds(a, os));
-        Stream<ListenableFuture<Collection<ListenableFuture<Collection<Entry>>>>> s2 = Stream.of(getArchiveDownloads(a, os));
-        Stream<ListenableFuture<Collection<Entry>>> s3 = s2.map(Utils.mapFuture()).collect(Utils.collectCollectionToStream());
-        Stream<ListenableFuture<Collection<Entry>>> s4 = Stream.concat(s1, s3);
-
-        return s4.map(Utils.mapFuture()).collect(Utils.collectCollectionsToSingleCollection());
+    public CollectionHashMap<DownloadType, SortedSet<Entry>, Entry> getAllAvailableDownloads(Architecture a, OS os) {
+        Stream<Collection<Entry>> step1 = Stream.of(getStableDownloads(a, os), getTestingDownloads(a, os), getDailyBuilds(a, os), getArchiveDownloads(a, os)).map(Utils.mapFuture());
+        Stream<CollectionHashMap.KeyValuePair<DownloadType, Entry>> step2 = step1.collect(Utils.collectCollectionToStream()).map(entry -> {
+            DownloadType downloadType = DownloadType.Daily;
+            if (entry.getVersion().startsWith(StableCallable.PREFIX))
+                downloadType = DownloadType.Stable;
+            else if (entry.getVersion().startsWith(TestingCallable.PREFIX))
+                downloadType = DownloadType.Testing;
+            else if (entry.getVersion().startsWith(ArchiveCallable.PREFIX))
+                downloadType = DownloadType.Archive;
+            return new CollectionHashMap.KeyValuePair<>(downloadType, entry);
+        });
+        return step2.collect(Utils.collectToCollectionHashmap(TreeSet<Entry>::new));
     }
 
     private ListenableFuture<Collection<Entry>> getDailyBuilds(Architecture a, OS os) {
         return executor.submit(new DailyBuildsCallable(os, a));
     }
 
-    private ListenableFuture<Collection<ListenableFuture<Collection<Entry>>>> getArchiveDownloads(Architecture a, OS os) {
-        return executor.submit(new ArchiveCallable(a, os));
+    private ListenableFuture<Collection<Entry>> getArchiveDownloads(Architecture a, OS os) {
+        return executor.submit(new ArchiveCallable(a, os, executor));
+    }
+
+    private ListenableFuture<Collection<Entry>> getStableDownloads(Architecture a, OS os) {
+        return executor.submit(new StableCallable(a, os, executor));
+    }
+
+    private ListenableFuture<Collection<Entry>> getTestingDownloads(Architecture a, OS os) {
+        return executor.submit(new TestingCallable(a, os, executor));
+    }
+
+    public enum DownloadType {
+        Archive, Testing, Stable, Daily;
     }
 
     @Override
     public void close() {
         executor.shutdown();
     }
-
-    public static class DownloadAvailablePredicate implements Predicate<String> {
-        private String extension, version;
-
-        public DownloadAvailablePredicate(String extension, String version) {
-            this.extension = extension;
-            this.version = version;
-        }
-
-        public DownloadAvailablePredicate(OS os, String version) {
-            this(os.getFileExtension(), version);
-        }
-
-        @Override
-        public boolean test(String s) {
-            try {
-                Pattern p = Pattern.compile(version.substring(0, version.length() - 1) + ".*?\\." + extension);
-                return p.matcher(downloadFromUrl(s)).find();
-            } catch (IOException e) {
-                return false;
-            }
-        }
-    }
-
 
     public static class Entry implements Comparable<Entry> {
         private String version, url;
@@ -129,7 +126,7 @@ public class Download implements AutoCloseable {
 
         @Override
         public String toString() {
-            return version + " " + os + '/' + a + " @ " + url;
+            return version + " " + os.getOSShortName() + '/' + a + " @ " + url;
         }
 
         @Override

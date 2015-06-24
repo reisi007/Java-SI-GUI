@@ -1,5 +1,7 @@
 package at.reisisoft;
 
+import at.reisisoft.collection.CollectionHashMap;
+
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -88,29 +90,101 @@ public class Utils {
 
     }
 
-    public static class KeyValuePair<K, V> {
-        private K key;
-        private V value;
+    public static <T> Collector<Stream<T>, Stream.Builder<T>, Stream<T>> reduceStreamOfStreams() {
+        return new Collector<Stream<T>, Stream.Builder<T>, Stream<T>>() {
+            @Override
+            public Supplier<Stream.Builder<T>> supplier() {
+                return Stream::builder;
+            }
 
-        public KeyValuePair(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
+            @Override
+            public BiConsumer<Stream.Builder<T>, Stream<T>> accumulator() {
+                return (tBuilder, tStream) -> tStream.forEach(tBuilder::add);
+            }
 
-        public K getKey() {
-            return key;
-        }
+            @Override
+            public BinaryOperator<Stream.Builder<T>> combiner() {
+                return (tBuilder, tBuilder2) -> {
+                    tBuilder.build().forEach(tBuilder2::add);
+                    return tBuilder2;
+                };
+            }
 
-        public void setKey(K key) {
-            this.key = key;
-        }
+            @Override
+            public Function<Stream.Builder<T>, Stream<T>> finisher() {
+                return Stream.Builder::build;
+            }
 
-        public V getValue() {
-            return value;
-        }
-
-        public void setValue(V value) {
-            this.value = value;
-        }
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+        };
     }
+
+    public static <T> Iterable<T> iterableFromStream(Stream<T> stream) {
+        return stream::iterator;
+    }
+
+    public static <K, V, T extends Collection<V>> Collector<CollectionHashMap.KeyValuePair<K, V>, CollectionHashMap<K, T, V>, CollectionHashMap<K, T, V>> collectToCollectionHashmap(Supplier<T> valueStorage) {
+        return new Collector<CollectionHashMap.KeyValuePair<K, V>, CollectionHashMap<K, T, V>, CollectionHashMap<K, T, V>>() {
+            @Override
+            public Supplier<CollectionHashMap<K, T, V>> supplier() {
+                return () -> new CollectionHashMap<K, T, V>() {
+                    private HashMap<K, T> map = new HashMap<>();
+
+                    @Override
+                    public Optional<T> get(Object o) {
+                        return Optional.ofNullable(map.get(o));
+                    }
+
+                    @Override
+                    public boolean put(K key, V value) {
+                        return map.computeIfAbsent(key, k -> valueStorage.get()).add(value);
+                    }
+
+                    @Override
+                    public Set<K> getKeySet() {
+                        return map.keySet();
+                    }
+
+                    @Override
+                    public int size() {
+                        return map.values().stream().mapToInt(Collection<V>::size).sum();
+                    }
+                };
+            }
+
+            @Override
+            public BiConsumer<CollectionHashMap<K, T, V>, CollectionHashMap.KeyValuePair<K, V>> accumulator() {
+                return CollectionHashMap<K, T, V>::put;
+            }
+
+            @Override
+            public BinaryOperator<CollectionHashMap<K, T, V>> combiner() {
+                return new BinaryOperator<CollectionHashMap<K, T, V>>() {
+                    @Override
+                    public CollectionHashMap<K, T, V> apply(CollectionHashMap<K, T, V> ktvCollectionHashMap, CollectionHashMap<K, T, V> ktvCollectionHashMap2) {
+                        Set<K> keySet = ktvCollectionHashMap2.getKeySet();
+                        for (K key : keySet) {
+                            T colVal = ktvCollectionHashMap2.get(key).get(); //This is save
+                            colVal.forEach(v -> ktvCollectionHashMap.put(key, v));
+                        }
+                        return ktvCollectionHashMap;
+                    }
+                };
+            }
+
+            @Override
+            public Function<CollectionHashMap<K, T, V>, CollectionHashMap<K, T, V>> finisher() {
+                return Function.identity();
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return new HashSet<>(Arrays.asList(Characteristics.CONCURRENT));
+            }
+        };
+    }
+
 }
