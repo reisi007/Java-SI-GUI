@@ -1,10 +1,10 @@
-package at.reisisoft;
+package at.reisisoft.sigui;
 
-import at.reisisoft.collection.CollectionHashMap;
-import at.reisisoft.concurrent.ArchiveCallable;
-import at.reisisoft.concurrent.DailyBuildsCallable;
-import at.reisisoft.concurrent.StableCallable;
-import at.reisisoft.concurrent.TestingCallable;
+import at.reisisoft.sigui.collection.CollectionHashMap;
+import at.reisisoft.sigui.concurrent.ArchiveCallable;
+import at.reisisoft.sigui.concurrent.DailyBuildsCallable;
+import at.reisisoft.sigui.concurrent.StableCallable;
+import at.reisisoft.sigui.concurrent.TestingCallable;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.common.util.concurrent.ListenableFuture;

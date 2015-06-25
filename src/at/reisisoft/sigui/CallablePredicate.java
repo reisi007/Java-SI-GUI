@@ -1,4 +1,4 @@
-package at.reisisoft;
+package at.reisisoft.sigui;
 
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;

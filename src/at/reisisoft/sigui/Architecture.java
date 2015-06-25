@@ -1,4 +1,4 @@
-package at.reisisoft;
+package at.reisisoft.sigui;
 
 /**
  * Created by Florian on 22.06.2015.

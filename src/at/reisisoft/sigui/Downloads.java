@@ -1,4 +1,4 @@
-package at.reisisoft;
+package at.reisisoft.sigui;
 
 import java.util.Collection;
 import java.util.Collections;

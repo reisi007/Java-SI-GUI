@@ -1,6 +1,6 @@
-package at.reisisoft;
+package at.reisisoft.sigui;
 
-import at.reisisoft.collection.CollectionHashMap;
+import at.reisisoft.sigui.collection.CollectionHashMap;
 
 import java.util.*;
 import java.util.concurrent.Future;

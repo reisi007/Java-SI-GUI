@@ -1,7 +1,7 @@
-package at.reisisoft.concurrent;
+package at.reisisoft.sigui.concurrent;
 
-import at.reisisoft.*;
-import at.reisisoft.collection.CollectionHashMap;
+import at.reisisoft.sigui.*;
+import at.reisisoft.sigui.collection.CollectionHashMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 

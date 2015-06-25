@@ -1,8 +1,8 @@
-package at.reisisoft.concurrent;
+package at.reisisoft.sigui.concurrent;
 
-import at.reisisoft.Architecture;
-import at.reisisoft.Constants;
-import at.reisisoft.OS;
+import at.reisisoft.sigui.Architecture;
+import at.reisisoft.sigui.Constants;
+import at.reisisoft.sigui.OS;
 import com.google.common.util.concurrent.ListeningExecutorService;
 
 /**
