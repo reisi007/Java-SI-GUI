@@ -1,6 +1,6 @@
 package at.reisisoft.sigui.downloader;
 
-import at.reisisoft.sigui.Download;
+import at.reisisoft.sigui.DownloadInfo;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,13 +20,13 @@ import java.util.regex.Pattern;
 /**
  * Created by Florian on 25.06.2015.
  */
-public class DownloadManager {
+public class DownloadManager implements AutoCloseable {
     private final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
     private final List<EntryProgress> entries = Collections.synchronizedList(new ArrayList<>(10));
 
     public ListenableFuture<Optional<Entry>> submit(Entry entry, DownloadProgressListener... downloadProgressListeners) {
         ListenableFuture<Optional<Entry>> listenableFuture = executorService.submit(getDownloadCallable(entry, downloadProgressListeners));
-        listenableFuture.addListener(() -> entries.remove(entry),MoreExecutors.sameThreadExecutor() );
+        listenableFuture.addListener(() -> entries.remove(entry), MoreExecutors.sameThreadExecutor());
         return listenableFuture;
     }
 
@@ -36,9 +35,9 @@ public class DownloadManager {
             try {
                 URLConnection urlConnection = entry.from.openConnection();
                 long totalSize = urlConnection.getContentLengthLong();
-                CountableInputStream countableInputStream = new CountableInputStream(urlConnection.getInputStream(), totalSize);
-                Arrays.stream(downloadProgressListeners).forEach(countableInputStream::addDownloadProgressListener);
-                Files.copy(countableInputStream, entry.to.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                DownloadProgressInputStream downloadProgressInputStream = new DownloadProgressInputStream(urlConnection.getInputStream(), totalSize);
+                Arrays.stream(downloadProgressListeners).forEach(downloadProgressInputStream::addDownloadProgressListener);
+                Files.copy(downloadProgressInputStream, entry.to.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 return Optional.of(entry);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -47,21 +46,21 @@ public class DownloadManager {
         };
     }
 
-    public Optional<Entry> getDownloadFileMain(Download.DownloadLocation base) {
+    public Optional<Entry> getDownloadFileMain(DownloadInfo.DownloadLocation base) {
         return getDownloadFile(base, getRegex4Main(base));
     }
 
-    public Optional<Entry> getDownloadFileSdk(Download.DownloadLocation base) {
+    public Optional<Entry> getDownloadFileSdk(DownloadInfo.DownloadLocation base) {
         return getDownloadFile(base, getRegex4Sdk(base));
     }
 
-    public Optional<Entry> getDownloadFileHelp(Download.DownloadLocation base, String hpLang) {
+    public Optional<Entry> getDownloadFileHelp(DownloadInfo.DownloadLocation base, String hpLang) {
         return getDownloadFile(base, getRegex4Hp(base, hpLang));
     }
 
-    private Optional<Entry> getDownloadFile(Download.DownloadLocation base, String regex) {
+    private Optional<Entry> getDownloadFile(DownloadInfo.DownloadLocation base, String regex) {
         try {
-            String html = Download.downloadFromUrl(base.getUrl());
+            String html = DownloadInfo.downloadFromUrl(base.getUrl());
             Pattern p = Pattern.compile(regex);
             Matcher m = p.matcher(html);
             if (!m.find())
@@ -76,18 +75,23 @@ public class DownloadManager {
         }
     }
 
-    private String getRegex4Main(Download.DownloadLocation base) {
-        if (base.getDownloadType() == Download.DownloadType.Daily)
+    private String getRegex4Main(DownloadInfo.DownloadLocation base) {
+        if (base.getDownloadType() == DownloadInfo.DownloadType.Daily)
             return base.getVersionCode() + ".+?" + base.getOs().getOSShortName() + "_" + base.getA().toString().toLowerCase() + "_[^h].+?[^sdk]\\." + base.getOs().getFileExtension() + "<";
         return "Lib.*?" + base.getA().toString().toLowerCase() + "\\." + base.getOs().getFileExtension() + "[^\\.asc]";
     }
 
-    private String getRegex4Sdk(Download.DownloadLocation base) {
-        return (base.getDownloadType() == Download.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + "<";
+    private String getRegex4Sdk(DownloadInfo.DownloadLocation base) {
+        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + "<";
     }
 
-    private String getRegex4Hp(Download.DownloadLocation base, String hpLang) {
-        return (base.getDownloadType() == Download.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + "<";
+    private String getRegex4Hp(DownloadInfo.DownloadLocation base, String hpLang) {
+        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + "<";
+    }
+
+    @Override
+    public void close() {
+        executorService.shutdown();
     }
 
     public static class Entry {
@@ -103,6 +107,10 @@ public class DownloadManager {
             this.to = to;
         }
 
+        public void setTo(File to) {
+            this.to = to;
+        }
+
         public URL getFrom() {
             return from;
         }
@@ -114,11 +122,11 @@ public class DownloadManager {
 
     private static class EntryProgress {
         public final Entry e;
-        public final CountableInputStream countableInputStream;
+        public final DownloadProgressInputStream downloadProgressInputStream;
 
-        public EntryProgress(Entry e, CountableInputStream countableInputStream) {
+        public EntryProgress(Entry e, DownloadProgressInputStream downloadProgressInputStream) {
             this.e = e;
-            this.countableInputStream = countableInputStream;
+            this.downloadProgressInputStream = downloadProgressInputStream;
         }
 
         @Override

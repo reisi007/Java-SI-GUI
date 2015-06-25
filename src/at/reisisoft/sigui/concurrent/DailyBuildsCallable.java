@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * Created by Florian on 22.06.2015.
  */
-public class DailyBuildsCallable implements Callable<Collection<Download.DownloadLocation>> {
+public class DailyBuildsCallable implements Callable<Collection<DownloadInfo.DownloadLocation>> {
 
     private OS os;
     private Architecture a;
@@ -27,10 +27,10 @@ public class DailyBuildsCallable implements Callable<Collection<Download.Downloa
     }
 
     @Override
-    public Collection<Download.DownloadLocation> call() throws Exception {
+    public Collection<DownloadInfo.DownloadLocation> call() throws Exception {
         if (os == OS.Win_EXE)
             return Collections.emptyList();
-        String html = Download.downloadFromUrl(Constants.DEV_BUILD_URL);
+        String html = DownloadInfo.downloadFromUrl(Constants.DEV_BUILD_URL);
         Collection e = new LinkedList<>();
         String[] versions = html.split("/icons/folder.gif");
         String[] subUrls = new String[versions.length - 1];
@@ -46,9 +46,9 @@ public class DailyBuildsCallable implements Callable<Collection<Download.Downloa
         return Arrays.stream(subUrls).map(g -> this.getThinderBoxCallable(Constants.DEV_BUILD_URL, g)).collect(Utils.collectCollectionsToSingleCollection());
     }
 
-    public Collection<Download.DownloadLocation> getThinderBoxCallable(String base, String branchUrl) {
+    public Collection<DownloadInfo.DownloadLocation> getThinderBoxCallable(String base, String branchUrl) {
         try {
-            String html = Download.downloadFromUrl(base + branchUrl);
+            String html = DownloadInfo.downloadFromUrl(base + branchUrl);
 
             Pattern p = Pattern.compile(os.getOSShortName() + "(\\w|_|-)+?" + a + "@[0-9]+?.*?\\/");
             Collection<String> thinderboxes = new LinkedList<>();
@@ -56,7 +56,7 @@ public class DailyBuildsCallable implements Callable<Collection<Download.Downloa
             while (m.find() && m.find())
                 thinderboxes.add(m.group());
             Stream<String> stream = thinderboxes.parallelStream().filter(t -> new DownloadAvailablePredicate(os, branchUrl.substring(0, branchUrl.length() - 1)).test(base + branchUrl + t + "current/"));
-            return stream.map(u -> new Download.DownloadLocation(u.substring(0, u.length() - 1), branchUrl, base + branchUrl + u + "current/", a, os)).collect(Collectors.toList());
+            return stream.map(u -> new DownloadInfo.DownloadLocation(u.substring(0, u.length() - 1), branchUrl, base + branchUrl + u + "current/", a, os)).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();

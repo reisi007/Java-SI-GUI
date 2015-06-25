@@ -14,7 +14,7 @@ public class Downloads {
     public static Collection<String> getLibOVersions(String url) {
         try {
             Collection<String> collection = new LinkedList<>();
-            String html = Download.downloadFromUrl(url);
+            String html = DownloadInfo.downloadFromUrl(url);
             Matcher m = Pattern.compile("[^sdremote-]([0-9]\\.){2,3}[0-9](\\.beta[0-9]{1,2})?(-hotfix[0-9]{1,2})?").matcher(html);
             while (m.find() && m.find()) {
                 String g = m.group();

@@ -1,5 +1,7 @@
 package at.reisisoft.sigui;
 
+import org.apache.commons.lang.SystemUtils;
+
 /**
  * Created by Florian on 22.06.2015.
  */
@@ -36,6 +38,20 @@ public enum OS {
         }
     }
 
+    public boolean isLinux() {
+        switch (this) {
+            case LinuxDeb:
+            case LinuxRPM:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public String getOSLongName() {
+        return super.toString();
+    }
+
     /**
      * @return The name used in the daily builds
      */
@@ -50,4 +66,17 @@ public enum OS {
                 return toString();
         }
     }
+
+    public static OS[] detect() {
+        if (SystemUtils.IS_OS_MAC_OSX) {
+            return new OS[]{Mac};
+        }
+        if (SystemUtils.IS_OS_LINUX)
+            return new OS[]{LinuxDeb, LinuxRPM};
+        if (SystemUtils.IS_OS_WINDOWS)
+            return new OS[]{Win, Win_EXE};
+        return new OS[0];
+    }
+
+    ;
 }

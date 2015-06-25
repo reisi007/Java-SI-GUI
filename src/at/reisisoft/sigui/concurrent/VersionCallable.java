@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Created by Florian on 24.06.2015.
  */
-public class VersionCallable implements Callable<Collection<Download.DownloadLocation>> {
+public class VersionCallable implements Callable<Collection<DownloadInfo.DownloadLocation>> {
 
     protected final Architecture a;
     protected final OS os;
@@ -29,11 +29,11 @@ public class VersionCallable implements Callable<Collection<Download.DownloadLoc
     }
 
     @Override
-    public Collection<Download.DownloadLocation> call() throws Exception {
-        Stream<CollectionHashMap.KeyValuePair<String, Download.DownloadLocation>> step1 = Downloads.getLibOVersions(url).parallelStream().map(m -> new CollectionHashMap.KeyValuePair<>(m, new Download.DownloadLocation(m, prefix, url + m + '/' + os.toString().toLowerCase() + '/' + a.toString().toLowerCase() + '/', a, os)));
-        Stream<CollectionHashMap.KeyValuePair<Download.DownloadLocation, CallablePredicate>> step2 = step1.map(kvp -> new CollectionHashMap.KeyValuePair<>(kvp.getValue(), new CallablePredicate<>(new DownloadAvailablePredicate(os, kvp.getKey()), kvp.getValue().getUrl())));
-        Stream<CollectionHashMap.KeyValuePair<Download.DownloadLocation, ListenableFuture<Boolean>>> step2b = step2.map(kvp -> new CollectionHashMap.KeyValuePair<>(kvp.getKey(), executorService.submit(kvp.getValue())));
-        Collection<CollectionHashMap.KeyValuePair<Download.DownloadLocation, ListenableFuture<Boolean>>> step3 = step2b.collect(Collectors.toList());
+    public Collection<DownloadInfo.DownloadLocation> call() throws Exception {
+        Stream<CollectionHashMap.KeyValuePair<String, DownloadInfo.DownloadLocation>> step1 = Downloads.getLibOVersions(url).parallelStream().map(m -> new CollectionHashMap.KeyValuePair<>(m, new DownloadInfo.DownloadLocation(m, prefix, url + m + '/' + os.toString().toLowerCase() + '/' + a.toString().toLowerCase() + '/', a, os)));
+        Stream<CollectionHashMap.KeyValuePair<DownloadInfo.DownloadLocation, CallablePredicate>> step2 = step1.map(kvp -> new CollectionHashMap.KeyValuePair<>(kvp.getValue(), new CallablePredicate<>(new DownloadAvailablePredicate(os, kvp.getKey()), kvp.getValue().getUrl())));
+        Stream<CollectionHashMap.KeyValuePair<DownloadInfo.DownloadLocation, ListenableFuture<Boolean>>> step2b = step2.map(kvp -> new CollectionHashMap.KeyValuePair<>(kvp.getKey(), executorService.submit(kvp.getValue())));
+        Collection<CollectionHashMap.KeyValuePair<DownloadInfo.DownloadLocation, ListenableFuture<Boolean>>> step3 = step2b.collect(Collectors.toList());
         return step3.parallelStream().filter(e -> {
             try {
                 return e.getValue().get();

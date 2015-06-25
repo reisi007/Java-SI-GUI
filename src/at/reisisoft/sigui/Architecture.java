@@ -10,4 +10,16 @@ public enum Architecture {
     public String toString() {
         return super.toString().toLowerCase();
     }
+
+    public String getUserReadableString() {
+        switch (this) {
+            case X86:
+                return "32-bit";
+            case X86_64:
+                return "64-bit";
+            default:
+                return toString();
+        }
+
+    }
 }

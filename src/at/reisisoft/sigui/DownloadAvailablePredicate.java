@@ -23,7 +23,7 @@ public class DownloadAvailablePredicate implements Predicate<String> {
     public boolean test(String s) {
         try {
             Pattern p = Pattern.compile(version.substring(0, version.length() - 1) + ".*?\\." + extension);
-            return p.matcher(Download.downloadFromUrl(s)).find();
+            return p.matcher(DownloadInfo.downloadFromUrl(s)).find();
         } catch (IOException e) {
             return false;
         }
