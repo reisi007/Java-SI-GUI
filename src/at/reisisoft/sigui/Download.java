@@ -52,10 +52,10 @@ public class Download implements AutoCloseable {
         executor = executorService;
     }
 
-    public CollectionHashMap<DownloadType, SortedSet<DownloadLocation>, DownloadLocation> getAllAvailableDownloads(Architecture a, OS os) {
+    public ListenableFuture<CollectionHashMap<DownloadType, SortedSet<DownloadLocation>, DownloadLocation>> getAllAvailableDownloads(Architecture a, OS os) {
         Stream<Collection<DownloadLocation>> step1 = Stream.of(getStableDownloads(a, os), getTestingDownloads(a, os), getDailyBuilds(a, os), getArchiveDownloads(a, os)).map(Utils.mapFuture());
         Stream<CollectionHashMap.KeyValuePair<DownloadType, DownloadLocation>> step2 = step1.collect(Utils.collectCollectionToStream()).map(entry -> new CollectionHashMap.KeyValuePair<>(entry.getDownloadType(), entry));
-        return step2.collect(Utils.collectToCollectionHashmap(TreeSet<DownloadLocation>::new));
+        return executor.submit(() -> step2.collect(Utils.collectToCollectionHashmap(TreeSet<DownloadLocation>::new)));
     }
 
     private ListenableFuture<Collection<DownloadLocation>> getDailyBuilds(Architecture a, OS os) {
