@@ -52,34 +52,25 @@ public class Download implements AutoCloseable {
         executor = executorService;
     }
 
-    public CollectionHashMap<DownloadType, SortedSet<Entry>, Entry> getAllAvailableDownloads(Architecture a, OS os) {
-        Stream<Collection<Entry>> step1 = Stream.of(getStableDownloads(a, os), getTestingDownloads(a, os), getDailyBuilds(a, os), getArchiveDownloads(a, os)).map(Utils.mapFuture());
-        Stream<CollectionHashMap.KeyValuePair<DownloadType, Entry>> step2 = step1.collect(Utils.collectCollectionToStream()).map(entry -> {
-            DownloadType downloadType = DownloadType.Daily;
-            if (entry.getVersion().startsWith(StableCallable.PREFIX))
-                downloadType = DownloadType.Stable;
-            else if (entry.getVersion().startsWith(TestingCallable.PREFIX))
-                downloadType = DownloadType.Testing;
-            else if (entry.getVersion().startsWith(ArchiveCallable.PREFIX))
-                downloadType = DownloadType.Archive;
-            return new CollectionHashMap.KeyValuePair<>(downloadType, entry);
-        });
-        return step2.collect(Utils.collectToCollectionHashmap(TreeSet<Entry>::new));
+    public CollectionHashMap<DownloadType, SortedSet<DownloadLocation>, DownloadLocation> getAllAvailableDownloads(Architecture a, OS os) {
+        Stream<Collection<DownloadLocation>> step1 = Stream.of(getStableDownloads(a, os), getTestingDownloads(a, os), getDailyBuilds(a, os), getArchiveDownloads(a, os)).map(Utils.mapFuture());
+        Stream<CollectionHashMap.KeyValuePair<DownloadType, DownloadLocation>> step2 = step1.collect(Utils.collectCollectionToStream()).map(entry -> new CollectionHashMap.KeyValuePair<>(entry.getDownloadType(), entry));
+        return step2.collect(Utils.collectToCollectionHashmap(TreeSet<DownloadLocation>::new));
     }
 
-    private ListenableFuture<Collection<Entry>> getDailyBuilds(Architecture a, OS os) {
+    private ListenableFuture<Collection<DownloadLocation>> getDailyBuilds(Architecture a, OS os) {
         return executor.submit(new DailyBuildsCallable(os, a));
     }
 
-    private ListenableFuture<Collection<Entry>> getArchiveDownloads(Architecture a, OS os) {
+    private ListenableFuture<Collection<DownloadLocation>> getArchiveDownloads(Architecture a, OS os) {
         return executor.submit(new ArchiveCallable(a, os, executor));
     }
 
-    private ListenableFuture<Collection<Entry>> getStableDownloads(Architecture a, OS os) {
+    private ListenableFuture<Collection<DownloadLocation>> getStableDownloads(Architecture a, OS os) {
         return executor.submit(new StableCallable(a, os, executor));
     }
 
-    private ListenableFuture<Collection<Entry>> getTestingDownloads(Architecture a, OS os) {
+    private ListenableFuture<Collection<DownloadLocation>> getTestingDownloads(Architecture a, OS os) {
         return executor.submit(new TestingCallable(a, os, executor));
     }
 
@@ -92,45 +83,56 @@ public class Download implements AutoCloseable {
         executor.shutdown();
     }
 
-    public static class Entry implements Comparable<Entry> {
-        private String version, url;
-        private Architecture a;
-        private OS os;
+    public static class DownloadLocation implements Comparable<DownloadLocation> {
+        private final String versionCode, versionPrefix, url;
+        private final Architecture a;
+        private final OS os;
 
-        public String getVersion() {
-            return version;
-        }
-
-
-        public OS getOs() {
-            return os;
-        }
-
-
-        public Architecture getA() {
-            return a;
-        }
-
-
-        public String getUrl() {
-            return url;
-        }
-
-
-        public Entry(String version, String url, Architecture a, OS os) {
-            this.version = version;
+        public DownloadLocation(String versionCode, String versionPrefix, String url, Architecture a, OS os) {
+            this.versionCode = versionCode;
+            this.versionPrefix = versionPrefix;
             this.url = url;
             this.a = a;
             this.os = os;
         }
 
-        @Override
-        public String toString() {
-            return version + " " + os.getOSShortName() + '/' + a + " @ " + url;
+        public String getVersionCode() {
+            return versionCode;
+        }
+
+        public String getVersionPrefix() {
+            return versionPrefix;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public Architecture getA() {
+            return a;
+        }
+
+        public OS getOs() {
+            return os;
+        }
+
+        public DownloadType getDownloadType() {
+            if (getVersionPrefix().startsWith(StableCallable.PREFIX))
+                return DownloadType.Stable;
+            if (getVersionPrefix().startsWith(TestingCallable.PREFIX))
+                return DownloadType.Testing;
+            if (getVersionPrefix().startsWith(ArchiveCallable.PREFIX))
+                return DownloadType.Archive;
+            return DownloadType.Daily;
         }
 
         @Override
-        public int compareTo(Entry o) {
+        public String toString() {
+            return versionPrefix + versionCode + " " + os.getOSShortName() + '/' + a + " @ " + url;
+        }
+
+        @Override
+        public int compareTo(DownloadLocation o) {
             return toString().compareTo(o.toString());
         }
     }
