@@ -56,7 +56,7 @@ public class DailyBuildsCallable implements Callable<Collection<DownloadInfo.Dow
             while (m.find() && m.find())
                 thinderboxes.add(m.group());
             Stream<String> stream = thinderboxes.parallelStream().filter(t -> new DownloadAvailablePredicate(os, branchUrl.substring(0, branchUrl.length() - 1)).test(base + branchUrl + t + "current/"));
-            return stream.map(u -> new DownloadInfo.DownloadLocation(u.substring(0, u.length() - 1), branchUrl, base + branchUrl + u + "current/", a, os)).collect(Collectors.toList());
+            return stream.map(u -> new DownloadInfo.DownloadLocation(u.substring(0, u.length() - 1), branchUrl.substring(0, branchUrl.length() - 1), base + branchUrl + u + "current/", a, os)).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();

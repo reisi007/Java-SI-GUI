@@ -53,7 +53,8 @@ public class Main {
             System.out.println("Download finished!");
             DownloadInfo.DownloadLocation[] locations = s1.get(dt).get().toArray(new DownloadInfo.DownloadLocation[0]);
             printArrayIndexed(locations);
-            DownloadProgressListener listener = DownloadProgressListener.onlyReactEvery512KB(e -> System.out.format("%s of %s (%s%)%n", e.getBytesTransferred(), e.getTotalSizeInBytes(), ((double) e.getBytesTransferred()) / e.getTotalSizeInBytes()));
+            DownloadProgressListener listener = e -> System.out.format("%s of %s (%.2f %%)%n", e.getBytesTransferred(), e.getTotalSizeInBytes(), e.getPercent() * 100);
+            downloadManager.addTotalDownloadProgressListener(listener);
             choice = readChoice(1, locations.length);
             DownloadInfo.DownloadLocation location = locations[choice - 1];
             Optional<DownloadManager.Entry> fileMain = downloadManager.getDownloadFileMain(location);
@@ -64,7 +65,7 @@ public class Main {
             DownloadManager.Entry entry = fileMain.get();
             entry.setTo(File.createTempFile("test", "123"));
             System.out.println("Downloading... This also hapens in the background");
-            ListenableFuture<Optional<DownloadManager.Entry>> submit = downloadManager.submit(entry, listener);
+            ListenableFuture<Optional<DownloadManager.Entry>> submit = downloadManager.submit(entry);
             submit.get();
             System.out.println("Download completed, program will exit now!");
         } catch (IOException e) {

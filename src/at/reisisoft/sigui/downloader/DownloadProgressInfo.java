@@ -10,7 +10,14 @@ public interface DownloadProgressInfo {
     long getBytesTransferred();
 
     default boolean isFinished() {
-        return getBytesTransferred() == getTotalSizeInBytes();
+        return getBytesTransferred() >= getTotalSizeInBytes();
+    }
+
+    default double getPercent() {
+        long bytes = getBytesTransferred(), total = getTotalSizeInBytes();
+        if (bytes == 0 && total == 0)
+            return 1d;
+        return ((double) bytes) / total;
     }
 
 }

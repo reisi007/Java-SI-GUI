@@ -85,7 +85,7 @@ public class DownloadProgressInputStream extends InputStream implements Download
     }
 
     private void fireProgressListener() {
-        downloadProgressListeners.stream().forEach(e -> e.downloadProgressChanged(this));
+        downloadProgressListeners.stream().forEach(e -> new Thread(() -> e.downloadProgressChanged(this)).start());
     }
 
     public void addDownloadProgressListener(DownloadProgressListener listener) {

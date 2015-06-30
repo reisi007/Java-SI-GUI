@@ -25,5 +25,16 @@ public interface DownloadProgressListener {
         };
     }
 
+    static DownloadProgressListener onlyReactEveryXTimes(final int x, final DownloadProgressListener listener) {
+        return new DownloadProgressListener() {
+            private EevryXConsumer<DownloadProgressInfo> eevryXConsumer = new EevryXConsumer<>(x, listener::downloadProgressChanged);
+
+            @Override
+            public void downloadProgressChanged(DownloadProgressInfo downloadProgressInfo) {
+                eevryXConsumer.accept(downloadProgressInfo);
+            }
+        };
+    }
+
     void downloadProgressChanged(DownloadProgressInfo downloadProgressInfo);
 }

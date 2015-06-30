@@ -11,6 +11,15 @@ public enum Architecture {
         return super.toString().toLowerCase();
     }
 
+    public String getInFilenameArchitecture() {
+        switch (this) {
+            case X86_64:
+                return "X64";
+            default:
+                return super.toString();
+        }
+    }
+
     public String getUserReadableString() {
         switch (this) {
             case X86:
