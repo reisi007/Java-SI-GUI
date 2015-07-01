@@ -7,9 +7,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.SortedSet;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
@@ -47,6 +46,22 @@ public class Main {
             printArrayIndexed(downloadTypes);
             choice = readChoice(1, downloadTypes.length);
             DownloadInfo.DownloadType dt = downloadTypes[choice - 1];
+            boolean main = false, sdk = false, help = false;
+            String helpLang = "en_US";
+            while (!main && !sdk && !help) {
+                console.nextLine();
+                System.out.println("Which files do you want to download. Type 'm' for the main program, 's' for the SDK and 'h' for the help");
+                String tmp = console.nextLine();
+                main = tmp.indexOf('m') >= 0;
+                sdk = tmp.indexOf('s') >= 0;
+                help = tmp.indexOf('h') >= 0;
+                if (help) {
+                    System.out.format("You choose help file. Which language do you want the help file? (Case sensitive code needed! Default: %s)%n", helpLang);
+                    tmp = console.nextLine();
+                    if (tmp.length() > 0)
+                        helpLang = tmp;
+                }
+            }
             System.out.format("You have shown interest in %s.%nWe now wait for the fetching to complete.", dt);
 
             CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> s1 = allAvailableDownloads.get();
@@ -57,19 +72,31 @@ public class Main {
             downloadManager.addTotalDownloadProgressListener(listener);
             choice = readChoice(1, locations.length);
             DownloadInfo.DownloadLocation location = locations[choice - 1];
-            Optional<DownloadManager.Entry> fileMain = downloadManager.getDownloadFileMain(location);
-            if (!fileMain.isPresent()) {
-                System.out.println("No download available");
-                return;
-            }
-            DownloadManager.Entry entry = fileMain.get();
-            entry.setTo(File.createTempFile("test", "123"));
+            Optional<DownloadManager.Entry> fileMain = null, fileHelp = null, fileSdk = null;
+            Collection<Optional<DownloadManager.Entry>> dlCollection = new ArrayList<>();
+            if (main) dlCollection.add(downloadManager.getDownloadFileMain(location));
+            if (help) dlCollection.add(downloadManager.getDownloadFileHelp(location, helpLang));
+            if (sdk) dlCollection.add(downloadManager.getDownloadFileSdk(location));
+            File f = getTmpFolder();
+            System.out.format("Download will be started to %s%n", f);
+            DownloadManager.Entry[] array = dlCollection.stream().filter(Optional::isPresent).map(Optional::get).map(entry -> {
+                entry.setTo(new File(f, entry.getFilename()));
+                return entry;
+            }).peek(e -> System.out.println("Downloading: " + e)).toArray(DownloadManager.Entry[]::new);
             System.out.println("Downloading... This also hapens in the background");
-            ListenableFuture<Optional<DownloadManager.Entry>> submit = downloadManager.submit(entry);
-            submit.get();
+            ListenableFuture<Optional<DownloadManager.Entry>>[] listenableFutures = new ListenableFuture[array.length];
+            for (int i = 0; i < array.length; i++)
+                listenableFutures[i] = downloadManager.submit(array[i]);
+            Arrays.stream(listenableFutures).map(Utils.mapFuture()).filter(Optional::isPresent).map(Optional::get).forEach(e -> System.out.println("Downloaded: " + e));
             System.out.println("Download completed, program will exit now!");
+        }
+    }
+
+    private static File getTmpFolder() {
+        try {
+            return Files.createTempDirectory("java-si-gui").toFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            return new File(".");
         }
     }
 

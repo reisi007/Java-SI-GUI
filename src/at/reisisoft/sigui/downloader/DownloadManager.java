@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Florian on 25.06.2015.
  */
-public class DownloadManager implements AutoCloseable {
+public class DownloadManager implements AutoCloseable, PartiallyCancelable<DownloadManager.Entry> {
     private final ListeningExecutorService executorService = MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
     private DownloadManagerTotalDownloadProgress totalDownloadProgress = new DownloadManagerTotalDownloadProgress();
 
@@ -100,17 +100,27 @@ public class DownloadManager implements AutoCloseable {
     }
 
     private String getRegex4Sdk(DownloadInfo.DownloadLocation base) {
-        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + "<";
+        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + '"';
     }
 
     private String getRegex4Hp(DownloadInfo.DownloadLocation base, String hpLang) {
-        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + "<";
+        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + '"';
     }
 
 
     @Override
     public void close() {
         executorService.shutdown();
+    }
+
+    @Override
+    public void cancel() {
+        totalDownloadProgress.cancel();
+    }
+
+    @Override
+    public void cancel(Entry toCancel) {
+        totalDownloadProgress.cancel(toCancel);
     }
 
     public static class Entry {
@@ -146,10 +156,16 @@ public class DownloadManager implements AutoCloseable {
         public Optional<File> getTo() {
             return Optional.ofNullable(to);
         }
+
+        @Override
+        public String toString() {
+            return String.format("Download from '%s' to '%s'!", from, to);
+        }
     }
 
-    private static class DownloadManagerTotalDownloadProgress implements DownloadProgressInfo {
-        private Map<Entry, DownloadProgressInfo> hashMap = Collections.synchronizedMap(new HashMap<>());
+    private static class DownloadManagerTotalDownloadProgress implements DownloadProgressInfo, PartiallyCancelable<Entry> {
+        private Map<Entry, DownloadProgressInfo> progressInfoMap = Collections.synchronizedMap(new HashMap<>());
+        private Map<Entry, ListenableFuture<?>> listenableFutureMap = Collections.synchronizedMap(new HashMap<>());
         private long total = 0, downloaded = 0;
         private List<DownloadProgressListener> downloadProgressListeners = new ArrayList<>();
 
@@ -170,10 +186,10 @@ public class DownloadManager implements AutoCloseable {
 
         public DownloadProgressListener getDownloadProgressListener(Entry entry) {
             return DownloadProgressListener.onlyReactEvery512KB(d -> {
-                DownloadProgressInfo progressInfo = hashMap.put(entry, d);
+                DownloadProgressInfo progressInfo = progressInfoMap.put(entry, d);
                 if (progressInfo == null) {
                     updateTotal();
-                    downloadProgressListener.setX(hashMap.size());
+                    downloadProgressListener.setX(progressInfoMap.size());
                 }
                 updateDownloaded();
                 fireDownloadProgressListener();
@@ -185,9 +201,11 @@ public class DownloadManager implements AutoCloseable {
          * @param listenableFuture A ListenableFuture object of the same entry
          */
         public void addDownloadFinishedListener(Entry entry, ListenableFuture<?> listenableFuture) {
+            listenableFutureMap.put(entry, listenableFuture);
             listenableFuture.addListener(() -> {
-                hashMap.remove(entry);
-                downloadProgressListener.setX(hashMap.size());
+                progressInfoMap.remove(entry);
+                listenableFutureMap.remove(entry);
+                downloadProgressListener.setX(progressInfoMap.size());
                 updateTotal();
                 updateDownloaded();
                 fireDownloadProgressListener();
@@ -203,7 +221,7 @@ public class DownloadManager implements AutoCloseable {
         }
 
         private long update(ToLongFunction<DownloadProgressInfo> toLongFunction) {
-            return hashMap.values().stream().mapToLong(toLongFunction).sum();
+            return progressInfoMap.values().stream().mapToLong(toLongFunction).sum();
         }
 
 
@@ -215,6 +233,22 @@ public class DownloadManager implements AutoCloseable {
         @Override
         public long getBytesTransferred() {
             return downloaded;
+        }
+
+        @Override
+        public void cancel() {
+            for (ListenableFuture<?> lf : listenableFutureMap.values())
+                lf.cancel(true);
+            progressInfoMap.clear();
+            listenableFutureMap.clear();
+        }
+
+        @Override
+        public void cancel(Entry toCancel) {
+            progressInfoMap.remove(toCancel);
+            ListenableFuture<?> lf = listenableFutureMap.remove(toCancel);
+            if (lf != null)
+                lf.cancel(true);
         }
     }
 }

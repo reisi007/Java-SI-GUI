@@ -15,8 +15,11 @@ public interface DownloadProgressInfo {
 
     default double getPercent() {
         long bytes = getBytesTransferred(), total = getTotalSizeInBytes();
-        if (bytes == 0 && total == 0)
-            return 1d;
+        if (total == 0)
+            if (bytes == 0)
+                return 0d;
+            else
+                return Double.NaN;
         return ((double) bytes) / total;
     }
 
