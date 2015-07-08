@@ -5,11 +5,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -53,7 +53,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
                 long totalSize = urlConnection.getContentLengthLong();
                 DownloadProgressInputStream downloadProgressInputStream = new DownloadProgressInputStream(urlConnection.getInputStream(), totalSize);
                 downloadProgressListeners.stream().forEach(downloadProgressInputStream::addDownloadProgressListener);
-                Files.copy(downloadProgressInputStream, entry.to.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(downloadProgressInputStream, entry.to, StandardCopyOption.REPLACE_EXISTING);
                 return Optional.of(entry);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -110,6 +110,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
     @Override
     public void close() {
+        cancel();
         executorService.shutdown();
     }
 
@@ -125,14 +126,14 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
     public static class Entry {
         private final URL from;
-        private File to;
+        private Path to;
         private String filename;
 
         public Entry(URL from) {
             this(from, null);
         }
 
-        public Entry(URL from, File to) {
+        public Entry(URL from, Path to) {
             this.from = from;
             this.to = to;
         }
@@ -145,7 +146,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
             this.filename = filename;
         }
 
-        public void setTo(File to) {
+        public void setTo(Path to) {
             this.to = to;
         }
 
@@ -153,7 +154,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
             return from;
         }
 
-        public Optional<File> getTo() {
+        public Optional<Path> getTo() {
             return Optional.ofNullable(to);
         }
 
@@ -167,6 +168,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
         private Map<Entry, DownloadProgressInfo> progressInfoMap = Collections.synchronizedMap(new HashMap<>());
         private Map<Entry, ListenableFuture<?>> listenableFutureMap = Collections.synchronizedMap(new HashMap<>());
         private long total = 0, downloaded = 0;
+        private boolean hasStarted = false;
         private List<DownloadProgressListener> downloadProgressListeners = new ArrayList<>();
 
         public void addDownloadProgressListener(DownloadProgressListener listener) {
@@ -186,6 +188,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
         public DownloadProgressListener getDownloadProgressListener(Entry entry) {
             return DownloadProgressListener.onlyReactEvery512KB(d -> {
+                hasStarted = true;
                 DownloadProgressInfo progressInfo = progressInfoMap.put(entry, d);
                 if (progressInfo == null) {
                     updateTotal();
@@ -222,6 +225,19 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
         private long update(ToLongFunction<DownloadProgressInfo> toLongFunction) {
             return progressInfoMap.values().stream().mapToLong(toLongFunction).sum();
+        }
+
+
+        @Override
+        public boolean hasStarted() {
+            return hasStarted;
+        }
+
+        @Override
+        public void resetHasStarted() throws IllegalStateException {
+            if (progressInfoMap.size() != 0 || listenableFutureMap.size() != 0)
+                throw new IllegalStateException("You have to cancel all downloads / let all download finish prior to resetting!");
+            hasStarted = false;
         }
 
 

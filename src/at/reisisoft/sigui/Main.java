@@ -3,11 +3,14 @@ package at.reisisoft.sigui;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.downloader.DownloadManager;
 import at.reisisoft.sigui.downloader.DownloadProgressListener;
+import at.reisisoft.sigui.l10n.LocalisationSupport;
+import at.reisisoft.sigui.l10n.TranslationsKey;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -18,8 +21,24 @@ public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         try (DownloadInfo d = new DownloadInfo();
              DownloadManager downloadManager = new DownloadManager()) {
+            LocalisationSupport localisationSupport = LocalisationSupport.getInstance();
+            System.out.println(localisationSupport.getString(TranslationsKey.CMD_HI));
+            boolean stepFinished = false;
+            while (!stepFinished) {
+                System.out.printf("Your local is '%s'. You can change that now!", Locale.getDefault());
+                String tmp = console.nextLine();
+                if (tmp.length() == 0)
+                    stepFinished = true;
+                else try {
+                    Locale l = Locale.forLanguageTag(tmp.replace('_', '-'));
+                    Locale.setDefault(l);
+                    System.out.format("Your language is %s%n", Locale.getDefault());
+                    stepFinished = true;
+                } catch (Exception e) {
+                    stepFinished = false;
+                }
+            }
 
-            System.out.println("Hi, I am Java SI-GUI!");
             OS[] oss = OS.detect();
             OS os = null;
             Architecture[] arch = Architecture.values();
@@ -77,10 +96,10 @@ public class Main {
             if (main) dlCollection.add(downloadManager.getDownloadFileMain(location));
             if (help) dlCollection.add(downloadManager.getDownloadFileHelp(location, helpLang));
             if (sdk) dlCollection.add(downloadManager.getDownloadFileSdk(location));
-            File f = getTmpFolder();
+            Path f = getTmpFolder();
             System.out.format("Download will be started to %s%n", f);
             DownloadManager.Entry[] array = dlCollection.stream().filter(Optional::isPresent).map(Optional::get).map(entry -> {
-                entry.setTo(new File(f, entry.getFilename()));
+                entry.setTo(f.resolve(entry.getFilename()));
                 return entry;
             }).peek(e -> System.out.println("Downloading: " + e)).toArray(DownloadManager.Entry[]::new);
             System.out.println("Downloading... This also hapens in the background");
@@ -92,11 +111,11 @@ public class Main {
         }
     }
 
-    private static File getTmpFolder() {
+    private static Path getTmpFolder() {
         try {
-            return Files.createTempDirectory("java-si-gui").toFile();
+            return Files.createTempDirectory("java-si-gui");
         } catch (IOException e) {
-            return new File(".");
+            return new File(".").toPath();
         }
     }
 
