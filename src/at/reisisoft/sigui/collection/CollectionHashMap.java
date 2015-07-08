@@ -1,8 +1,6 @@
 package at.reisisoft.sigui.collection;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Florian on 24.06.2015.
@@ -33,7 +31,23 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
         return b;
     }
 
+    default boolean put(K key, V[] values) {
+        return put(key, Arrays.asList(values));
+    }
+
+    default boolean put(K key, Collection<V> values) {
+        boolean worked = true;
+        for (V value : values)
+            worked = worked & put(key, value);
+        return worked;
+    }
+
+
+    C remove(Object key);
+
     int size();
+
+    Map<K, C> toCollection();
 
     class KeyValuePair<K, V> {
         private K key;

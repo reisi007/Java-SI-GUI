@@ -1,31 +1,21 @@
 package at.reisisoft.sigui.collection;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by Florian on 24.06.2015.
  */
-public class SortedSetHashMap<K, V extends Comparable<V>> implements CollectionHashMap<K, SortedSet<V>, V> {
-    private HashMap<K, SortedSet<V>> map;
+public class SortedSetHashMap<K, V extends Comparable<V>> extends AbstractCollectionHashMap<K, SortedSet<V>, V> implements Serializable {
+
 
     public SortedSetHashMap() {
-        map = new HashMap<>();
+        super(k -> new TreeSet<>());
     }
 
-    public Optional<SortedSet<V>> get(Object o) {
-        return Optional.ofNullable(map.get(o));
-    }
-
-    public boolean put(K key, V value) {
-        return map.computeIfAbsent(key, k -> new TreeSet<>()).add(value);
-    }
-
-    @Override
-    public Set<K> getKeySet() {
-        return map.keySet();
-    }
-
-    public int size() {
-        return map.values().stream().mapToInt(SortedSet<V>::size).sum();
+    public SortedSetHashMap(Map<K, SortedSet<V>> values) {
+        super(k -> new TreeSet<>(), values);
     }
 }

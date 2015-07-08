@@ -1,32 +1,20 @@
 package at.reisisoft.sigui.collection;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Florian on 24.06.2015.
  */
-public class ListHashMap<K, V> implements CollectionHashMap<K, List<V>, V> {
-    private HashMap<K, List<V>> map;
+public class ListHashMap<K, V> extends AbstractCollectionHashMap<K, List<V>, V> implements Serializable {
 
     public ListHashMap() {
-        map = new HashMap<>();
+        super(k -> new LinkedList<>());
     }
 
-    public Optional<List<V>> get(Object o) {
-        return Optional.ofNullable(map.get(o));
-    }
-
-    public boolean put(K key, V value) {
-        return map.computeIfAbsent(key, k -> new LinkedList<>()).add(value);
-    }
-
-    @Override
-    public Set<K> getKeySet() {
-        return map.keySet();
-    }
-
-
-    public int size() {
-        return map.values().stream().mapToInt(List<V>::size).sum();
+    public ListHashMap(Map<K, List<V>> values) {
+        super(k -> new LinkedList<>(), values);
     }
 }
