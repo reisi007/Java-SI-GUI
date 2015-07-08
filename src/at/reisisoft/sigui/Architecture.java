@@ -29,6 +29,12 @@ public enum Architecture {
             default:
                 return toString();
         }
+    }
 
+    public static Architecture detect() {
+        String arch = System.getProperty("os.arch").trim();
+        if ("amd64".equalsIgnoreCase(arch))
+            return X86_64;
+        return X86;
     }
 }

@@ -41,8 +41,8 @@ public class Main {
 
             OS[] oss = OS.detect();
             OS os = null;
-            Architecture[] arch = Architecture.values();
-            Architecture a = null;
+
+            Architecture a = Architecture.detect();
             if (oss.length == 0)
                 oss = OS.values();
             else if (oss.length == 1)
@@ -52,18 +52,14 @@ public class Main {
                 printArrayIndexed(oss, OS::getOSLongName);
                 int choice = readChoice(1, oss.length);
                 os = oss[choice - 1];
-                System.out.format("Choose your System architecture%n");
             }
-            printArrayIndexed(arch);
-            int choice = readChoice(1, arch.length);
-            a = arch[choice - 1];
             System.out.format("You chose %s - %s!%n", os.getOSLongName(), a);
             System.out.println("Fetching possible downloads in the background!");
             ListenableFuture<CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation>> allAvailableDownloads = d.getAllAvailableDownloads(a, os);
             DownloadInfo.DownloadType[] downloadTypes = DownloadInfo.DownloadType.values();
             System.out.println("In which of the following dowloadTypes are you interested");
             printArrayIndexed(downloadTypes);
-            choice = readChoice(1, downloadTypes.length);
+            int choice = readChoice(1, downloadTypes.length);
             DownloadInfo.DownloadType dt = downloadTypes[choice - 1];
             boolean main = false, sdk = false, help = false;
             String helpLang = "en_US";

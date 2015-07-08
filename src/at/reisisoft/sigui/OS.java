@@ -1,7 +1,5 @@
 package at.reisisoft.sigui;
 
-import org.apache.commons.lang.SystemUtils;
-
 /**
  * Created by Florian on 22.06.2015.
  */
@@ -48,6 +46,16 @@ public enum OS {
         }
     }
 
+    public boolean isWindows() {
+        switch (this) {
+            case Win_EXE:
+            case Win:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public String getOSLongName() {
         return super.toString();
     }
@@ -68,15 +76,29 @@ public enum OS {
     }
 
     public static OS[] detect() {
-        if (SystemUtils.IS_OS_MAC_OSX) {
+        if (isaMacVM()) {
             return new OS[]{Mac};
         }
-        if (SystemUtils.IS_OS_LINUX)
-            return new OS[]{LinuxDeb, LinuxRPM};
-        if (SystemUtils.IS_OS_WINDOWS)
+        if (isWindowsVM())
             return new OS[]{Win, Win_EXE};
+        if (isaLinuxVM())
+            return new OS[]{LinuxDeb, LinuxRPM};
         return new OS[0];
     }
 
-    ;
+    public static boolean isWindowsVM() {
+        return getOSName().matches("(W|w)indows*");
+    }
+
+    public static boolean isaLinuxVM() {
+        return !isWindowsVM() && !isaMacVM();
+    }
+
+    public static boolean isaMacVM() {
+        return getOSName().matches("(M|m)ac*");
+    }
+
+    private static String getOSName() {
+        return System.getProperty("os.arch");
+    }
 }

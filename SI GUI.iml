@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.google.guava:guava:14.0.1" level="project" />
-    <orderEntry type="library" name="commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="jshortcut-0.4-oberzalek" level="project" />
   </component>
 </module>

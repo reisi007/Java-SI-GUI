@@ -1,5 +1,6 @@
 package at.reisisoft.sigui;
 
+import at.reisisoft.sigui.collection.AbstractCollectionHashMap;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 
 import java.util.*;
@@ -130,28 +131,7 @@ public class Utils {
         return new Collector<CollectionHashMap.KeyValuePair<K, V>, CollectionHashMap<K, T, V>, CollectionHashMap<K, T, V>>() {
             @Override
             public Supplier<CollectionHashMap<K, T, V>> supplier() {
-                return () -> new CollectionHashMap<K, T, V>() {
-                    private HashMap<K, T> map = new HashMap<>();
-
-                    @Override
-                    public Optional<T> get(Object o) {
-                        return Optional.ofNullable(map.get(o));
-                    }
-
-                    @Override
-                    public boolean put(K key, V value) {
-                        return map.computeIfAbsent(key, k -> valueStorage.get()).add(value);
-                    }
-
-                    @Override
-                    public Set<K> getKeySet() {
-                        return map.keySet();
-                    }
-
-                    @Override
-                    public int size() {
-                        return map.values().stream().mapToInt(Collection<V>::size).sum();
-                    }
+                return () -> new AbstractCollectionHashMap<K, T, V>(k -> valueStorage.get()) {
                 };
             }
 
