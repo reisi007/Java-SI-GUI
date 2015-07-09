@@ -16,5 +16,5 @@ public interface ShortcutProvider {
      * @param comment     If possible, have a comment / tooltip associated with the shortcut
      * @throws IOException
      */
-    public abstract void createShortcut(Path path, String name, Path destination, String comment) throws IOException;
+    void createShortcut(Path path, String name, Path destination, String comment) throws IOException;
 }

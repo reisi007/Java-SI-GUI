@@ -1,5 +1,6 @@
 package at.reisisoft.sigui.collection;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -49,9 +50,13 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
 
     Map<K, C> toCollection();
 
-    class KeyValuePair<K, V> {
+    class KeyValuePair<K, V> implements Serializable {
         private K key;
         private V value;
+
+        public KeyValuePair() {
+            this(null, null);
+        }
 
         public KeyValuePair(K key, V value) {
             this.key = key;
@@ -78,5 +83,6 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
         public String toString() {
             return String.format("(%s->%s)", key, value);
         }
+
     }
 }
