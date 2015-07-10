@@ -4,7 +4,6 @@ import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.downloader.DownloadManager;
 import at.reisisoft.sigui.downloader.DownloadProgressListener;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
-import at.reisisoft.sigui.l10n.TranslationsKey;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
@@ -22,7 +21,7 @@ public class Main {
         try (DownloadInfo d = new DownloadInfo();
              DownloadManager downloadManager = new DownloadManager()) {
             LocalisationSupport localisationSupport = LocalisationSupport.getInstance();
-            System.out.println(localisationSupport.getString(TranslationsKey.CMD_HI));
+            System.out.println("Hi! I am SI-GUI");
             boolean stepFinished = false;
             while (!stepFinished) {
                 System.out.printf("Your local is '%s'. You can change that now!", Locale.getDefault());

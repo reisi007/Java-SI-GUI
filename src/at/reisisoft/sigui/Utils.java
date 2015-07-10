@@ -3,6 +3,12 @@ package at.reisisoft.sigui;
 import at.reisisoft.sigui.collection.AbstractCollectionHashMap;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
@@ -163,6 +169,27 @@ public class Utils {
             @Override
             public Set<Characteristics> characteristics() {
                 return new HashSet<>(Arrays.asList(Characteristics.CONCURRENT));
+            }
+        };
+    }
+
+    public static ResourceBundle.Control getUTFRessourceBundleControl() {
+        return new ResourceBundle.Control() {
+            @Override
+            public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IllegalAccessException, InstantiationException, IOException {
+                String ressourceName = toResourceName(toBundleName(baseName, locale), "properties");
+                Reader reader = null;
+                Charset charset = StandardCharsets.UTF_8;
+                if (reload) {
+                    URL urlConnection = loader.getResource(ressourceName);
+                    if (urlConnection == null)
+                        return null;
+                    reader = new InputStreamReader(urlConnection.openStream(), charset);
+                } else reader = new InputStreamReader(loader.getResourceAsStream(ressourceName), charset);
+
+                ResourceBundle bundle = new PropertyResourceBundle(reader);
+                reader.close();
+                return bundle;
             }
         };
     }
