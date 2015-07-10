@@ -12,7 +12,7 @@ import java.util.Optional;
 public class WinExeInstallationTqElement extends AbstractInstallationTqElement {
     @Override
     public Optional<InstallationProvider> getElementValue(OS from) {
-        if (from == OS.Win_EXE)
+        if (from == OS.WinExe)
             return Optional.of(getInstallationProvider());
         return Optional.empty();
     }

@@ -12,7 +12,7 @@ import java.util.Optional;
 public class WinMsiInstallationTqElement extends AbstractInstallationTqElement {
     @Override
     public Optional<InstallationProvider> getElementValue(OS from) {
-        if (from == OS.Win)
+        if (from == OS.WinMsi)
             return Optional.of(getInstallationProvider());
         return Optional.empty();
     }

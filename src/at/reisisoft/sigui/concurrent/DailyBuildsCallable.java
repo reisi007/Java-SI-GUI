@@ -28,7 +28,7 @@ public class DailyBuildsCallable implements Callable<Collection<DownloadInfo.Dow
 
     @Override
     public Collection<DownloadInfo.DownloadLocation> call() throws Exception {
-        if (os == OS.Win_EXE)
+        if (os == OS.WinExe)
             return Collections.emptyList();
         String html = DownloadInfo.downloadFromUrl(Constants.DEV_BUILD_URL);
         Collection e = new LinkedList<>();

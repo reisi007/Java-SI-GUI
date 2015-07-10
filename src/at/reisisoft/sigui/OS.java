@@ -4,13 +4,13 @@ package at.reisisoft.sigui;
  * Created by Florian on 22.06.2015.
  */
 public enum OS {
-    Win_EXE, Win, Mac, LinuxDeb, LinuxRPM;
+    WinExe, WinMsi, Mac, LinuxDeb, LinuxRPM;
 
     public String getFileExtension() {
         switch (this) {
-            case Win:
+            case WinMsi:
                 return "msi";
-            case Win_EXE:
+            case WinExe:
                 return "exe";
             case LinuxDeb:
             case LinuxRPM:
@@ -29,8 +29,9 @@ public enum OS {
                 return "RPM";
             case LinuxDeb:
                 return "DEB";
-            case Win_EXE:
-                return Win.toString();
+            case WinExe:
+            case WinMsi:
+                return "Win";
             default:
                 return super.toString();
         }
@@ -48,8 +49,8 @@ public enum OS {
 
     public boolean isWindows() {
         switch (this) {
-            case Win_EXE:
-            case Win:
+            case WinExe:
+            case WinMsi:
                 return true;
             default:
                 return false;
@@ -68,8 +69,8 @@ public enum OS {
             case LinuxDeb:
             case LinuxRPM:
                 return "Linux";
-            case Win_EXE:
-                return Win.toString();
+            case WinExe:
+                return WinMsi.toString();
             default:
                 return toString();
         }
@@ -80,25 +81,25 @@ public enum OS {
             return new OS[]{Mac};
         }
         if (isWindowsVM())
-            return new OS[]{Win, Win_EXE};
-        if (isaLinuxVM())
+            return new OS[]{WinMsi, WinExe};
+        if (isLinuxVM())
             return new OS[]{LinuxDeb, LinuxRPM};
         return new OS[0];
     }
 
     public static boolean isWindowsVM() {
-        return getOSName().matches("(W|w)indows*");
+        return getOSName().startsWith("wind");
     }
 
-    public static boolean isaLinuxVM() {
-        return !isWindowsVM() && !isaMacVM();
+    public static boolean isLinuxVM() {
+        return getOSName().startsWith("lin");
     }
 
     public static boolean isaMacVM() {
-        return getOSName().matches("(M|m)ac*");
+        return getOSName().startsWith("mac");
     }
 
     private static String getOSName() {
-        return System.getProperty("os.arch");
+        return System.getProperty("os.name").toLowerCase();
     }
 }
