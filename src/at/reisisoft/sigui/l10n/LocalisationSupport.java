@@ -2,15 +2,8 @@ package at.reisisoft.sigui.l10n;
 
 import at.reisisoft.sigui.Utils;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 /**
@@ -27,7 +20,6 @@ public class LocalisationSupport {
     }
 
     private LocalisationSupport() {
-
     }
 
     private ResourceBundle bundle = ResourceBundle.getBundle(LocalisationSupport.class.getPackage().getName() + ".Messages", Locale.getDefault(), Utils.getUTFRessourceBundleControl());

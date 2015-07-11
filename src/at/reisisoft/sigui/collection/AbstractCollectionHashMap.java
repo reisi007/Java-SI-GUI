@@ -55,4 +55,12 @@ public class AbstractCollectionHashMap<K, C extends Collection<V>, V> implements
     public Map<K, C> toCollection() {
         return Collections.unmodifiableMap(map);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("CollectionHashmap[");
+        for (K key : map.keySet())
+            sb.append(key).append(" => ").append(map.get(key));
+        return sb.append(']').toString();
+    }
 }

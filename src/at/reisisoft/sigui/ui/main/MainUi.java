@@ -1,12 +1,15 @@
 package at.reisisoft.sigui.ui.main;
 
 import at.reisisoft.sigui.l10n.LocalisationSupport;
+import at.reisisoft.sigui.settings.SiGuiSettings;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Locale;
 
@@ -17,6 +20,15 @@ public class MainUi extends Application {
 
     private LocalisationSupport localisationSupport;
     private EnumMap<MainUITab, Tab> mainUITabs = new EnumMap<>(MainUITab.class);
+    private static final Path settingsPath = new File(".").toPath().resolve("si-gui-java.settings.xml");
+    private static SiGuiSettings _instance = null;
+
+    public SiGuiSettings getInstance() {
+        if (_instance == null)
+            _instance = SiGuiSettings.load(settingsPath);
+        System.out.println(_instance.toString());//TODO Remove after testing
+        return _instance;
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -25,8 +37,8 @@ public class MainUi extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //TODO Load settings
-        //Apply default language TODO Change to user selected language
-        Locale.setDefault(Locale.ENGLISH);
+        SiGuiSettings settings = getInstance();
+        Locale.setDefault(settings.getUserLanguage());
         //Get localisation support
         localisationSupport = LocalisationSupport.getInstance();
         //Configure tabbed layout
@@ -50,6 +62,7 @@ public class MainUi extends Application {
     @Override
     public void stop() throws Exception {
         //TODO cleanup
+        getInstance().save(settingsPath, localisationSupport);
         super.stop();
     }
 }

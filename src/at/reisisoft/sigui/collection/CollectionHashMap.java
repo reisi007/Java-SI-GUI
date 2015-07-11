@@ -7,6 +7,51 @@ import java.util.*;
  * Created by Florian on 24.06.2015.
  */
 public interface CollectionHashMap<K, C extends Collection<V>, V> {
+    /**
+     * @param <K> The key of the Hashmap
+     * @param <C> The collecion used to store the values
+     * @param <V> The value
+     * @return An immuteable, empty Collectionhashmap
+     */
+    static <K, C extends Collection<V>, V> CollectionHashMap<K, C, V> empty() {
+        return new CollectionHashMap<K, C, V>() {
+            @Override
+            public Optional<C> get(Object o) {
+                return Optional.empty();
+            }
+
+            @Override
+            public boolean put(K key, V value) {
+                return false;
+            }
+
+            @Override
+            public Set<K> getKeySet() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public C remove(Object key) {
+                return null;
+            }
+
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public Map<K, C> toCollection() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public String toString() {
+                return "CollectionHashmap[]";
+            }
+        };
+    }
+
 
     Optional<C> get(Object o);
 
