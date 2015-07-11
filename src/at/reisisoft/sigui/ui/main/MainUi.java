@@ -23,7 +23,7 @@ public class MainUi extends Application {
     private static final Path settingsPath = new File(".").toPath().resolve("si-gui-java.settings.xml");
     private static SiGuiSettings _instance = null;
 
-    public static SiGuiSettings getInstance() {
+    public static SiGuiSettings getSettingsInstance() {
         if (_instance == null)
             _instance = SiGuiSettings.load(settingsPath);
         System.out.println(_instance.toString());//TODO Remove after testing
@@ -37,7 +37,7 @@ public class MainUi extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         //TODO Load settings
-        SiGuiSettings settings = getInstance();
+        SiGuiSettings settings = getSettingsInstance();
         Locale.setDefault(settings.getUserLanguage());
         //Get localisation support
         localisationSupport = LocalisationSupport.getInstance();
@@ -61,7 +61,7 @@ public class MainUi extends Application {
     @Override
     public void stop() throws Exception {
         //TODO cleanup
-        getInstance().save(settingsPath, localisationSupport);
+        getSettingsInstance().save(settingsPath, localisationSupport);
         super.stop();
     }
 }

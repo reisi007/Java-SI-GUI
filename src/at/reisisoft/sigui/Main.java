@@ -3,7 +3,6 @@ package at.reisisoft.sigui;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.downloader.DownloadManager;
 import at.reisisoft.sigui.downloader.DownloadProgressListener;
-import at.reisisoft.sigui.l10n.LocalisationSupport;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
@@ -20,23 +19,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         try (DownloadInfo d = new DownloadInfo();
              DownloadManager downloadManager = new DownloadManager()) {
-            LocalisationSupport localisationSupport = LocalisationSupport.getInstance();
-            System.out.println("Hi! I am SI-GUI");
-            boolean stepFinished = false;
-            while (!stepFinished) {
-                System.out.printf("Your local is '%s'. You can change that now!", Locale.getDefault());
-                String tmp = console.nextLine();
-                if (tmp.length() == 0)
-                    stepFinished = true;
-                else try {
-                    Locale l = Locale.forLanguageTag(tmp.replace('_', '-'));
-                    Locale.setDefault(l);
-                    System.out.format("Your language is %s%n", Locale.getDefault());
-                    stepFinished = true;
-                } catch (Exception e) {
-                    stepFinished = false;
-                }
-            }
+            System.out.println("Hi! I am SI-GUI!");
 
             OS[] oss = OS.detect();
             OS os = null;
@@ -54,12 +37,12 @@ public class Main {
             }
             System.out.format("You chose %s - %s!%n", os.getOSLongName(), a);
             System.out.println("Fetching possible downloads in the background!");
-            ListenableFuture<CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation>> allAvailableDownloads = d.getAllAvailableDownloads(a, os);
-            DownloadInfo.DownloadType[] downloadTypes = DownloadInfo.DownloadType.values();
+            ListenableFuture<CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation>> allAvailableDownloads = d.getAllAvailableDownloads(a, os);
+            DownloadType[] downloadTypes = DownloadType.values();
             System.out.println("In which of the following dowloadTypes are you interested");
             printArrayIndexed(downloadTypes);
             int choice = readChoice(1, downloadTypes.length);
-            DownloadInfo.DownloadType dt = downloadTypes[choice - 1];
+            DownloadType dt = downloadTypes[choice - 1];
             boolean main = false, sdk = false, help = false;
             String helpLang = "en_US";
             while (!main && !sdk && !help) {
@@ -78,7 +61,7 @@ public class Main {
             }
             System.out.format("You have shown interest in %s.%nWe now wait for the fetching to complete.", dt);
 
-            CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> s1 = allAvailableDownloads.get();
+            CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> s1 = allAvailableDownloads.get();
             System.out.println("Download finished!");
             DownloadInfo.DownloadLocation[] locations = s1.get(dt).get().toArray(new DownloadInfo.DownloadLocation[0]);
             printArrayIndexed(locations);

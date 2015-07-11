@@ -1,6 +1,6 @@
 package at.reisisoft.sigui.settings;
 
-import at.reisisoft.sigui.DownloadInfo;
+import at.reisisoft.sigui.*;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import com.thoughtworks.xstream.XStream;
@@ -34,7 +34,10 @@ public class SiGuiSettings implements Serializable {
     private Map<StringSettingKey, String> stringSettings = new EnumMap<>(StringSettingKey.class);
     private Map<BooleanSettingKey, Boolean> booleanSettings = new EnumMap<>(BooleanSettingKey.class);
 
-    private CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> cachedDownloads = CollectionHashMap.empty();
+    private List<OS> oss = Arrays.asList(OS.detect());
+    private List<Architecture> architectures = Arrays.asList(Architecture.detect());
+
+    private CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> cachedDownloads = CollectionHashMap.empty();
     private Locale userLanguage = Locale.getDefault();
 
     public Optional<String> getStringSettings(StringSettingKey key) {
@@ -60,11 +63,11 @@ public class SiGuiSettings implements Serializable {
     }
 
 
-    public CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> getCachedDownloads() {
+    public CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> getCachedDownloads() {
         return cachedDownloads;
     }
 
-    public void setCachedDownloads(CollectionHashMap<DownloadInfo.DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> cachedDownloads) {
+    public void setCachedDownloads(CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> cachedDownloads) {
         this.cachedDownloads = cachedDownloads;
     }
 
@@ -74,6 +77,24 @@ public class SiGuiSettings implements Serializable {
 
     public void setUserLanguage(Locale userLanguage) {
         this.userLanguage = userLanguage;
+    }
+
+    public List<OS> getOSs() {
+        return oss;
+    }
+
+    public List<Architecture> getArchitectures() {
+        return architectures;
+    }
+
+    public void setOSs(List<OS> oss) {
+        Objects.requireNonNull(oss);
+        this.oss = oss;
+    }
+
+    public void setArchitectures(List<Architecture> architectures) {
+        Objects.requireNonNull(architectures);
+        this.architectures = architectures;
     }
 
     public void save(Path p, LocalisationSupport localisationSupport) throws IOException {
@@ -87,6 +108,7 @@ public class SiGuiSettings implements Serializable {
         try {
             return (SiGuiSettings) getXStream().fromXML(Files.newBufferedReader(p, StandardCharsets.UTF_8));
         } catch (Exception e) {
+            e.printStackTrace();
             return new SiGuiSettings();
         }
     }
@@ -102,6 +124,8 @@ public class SiGuiSettings implements Serializable {
         return "SiGuiSettings{" +
                 "stringSettings=" + stringSettings +
                 ", booleanSettings=" + booleanSettings +
+                ", oss=" + Utils.toString(oss, os -> os.getOSLongName()) +
+                ", architectures=" + architectures +
                 ", cachedDownloads=" + cachedDownloads +
                 ", userLanguage=" + userLanguage +
                 '}';

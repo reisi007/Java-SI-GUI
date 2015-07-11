@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
 import java.util.SortedSet;
@@ -76,19 +77,20 @@ public class DownloadInfo implements AutoCloseable {
         return executor.submit(new TestingCallable(a, os, executor));
     }
 
-    public enum DownloadType {
-        Archive, Testing, Stable, Daily;
-    }
-
     @Override
     public void close() {
         executor.shutdown();
     }
 
-    public static class DownloadLocation implements Comparable<DownloadLocation> {
+    public static class DownloadLocation implements Comparable<DownloadLocation>, Serializable {
         private final String versionCode, versionPrefix, url;
         private final Architecture a;
         private final OS os;
+
+        @Deprecated
+        public DownloadLocation() {
+            this(null, null, null, null, null);
+        }
 
         public DownloadLocation(String versionCode, String versionPrefix, String url, Architecture a, OS os) {
             this.versionCode = versionCode;

@@ -88,6 +88,14 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
         return worked;
     }
 
+    default void put(CollectionHashMap<? extends K, ? extends C, ? extends V> another) {
+        for (K key : another.getKeySet()) {
+            Optional<? extends C> optional = another.get(key);
+            if (optional.isPresent())
+                put(key, optional.get());
+        }
+    }
+
 
     C remove(Object key);
 

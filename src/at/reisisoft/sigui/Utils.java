@@ -194,4 +194,17 @@ public class Utils {
         };
     }
 
+    public static <T> String toString(List<T> list, Function<T, String> toStringMapper) {
+        String[] strings = new String[list.size()];
+        for (int i = 0; i < strings.length; i++)
+            strings[i] = toStringMapper.apply(list.get(i));
+        return Arrays.toString(strings);
+    }
+
+    public static <T> String toString(T[] array, Function<T, String> toStringMapper) {
+        String[] strings = new String[array.length];
+        for (int i = 0; i < array.length; i++)
+            strings[i] = toStringMapper.apply(array[i]);
+        return Arrays.toString(strings);
+    }
 }

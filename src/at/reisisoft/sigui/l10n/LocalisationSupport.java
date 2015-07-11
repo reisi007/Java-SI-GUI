@@ -25,7 +25,7 @@ public class LocalisationSupport {
     private ResourceBundle bundle = ResourceBundle.getBundle(LocalisationSupport.class.getPackage().getName() + ".Messages", Locale.getDefault(), Utils.getUTFRessourceBundleControl());
 
     public String getString(TranslationKey key, Object... format) {
-        String value = bundle.getString(key.toString());
+        String value = bundle.getString(key.getTranslationKey());
         if (format.length == 0)
             return value;
         return MessageFormat.format(value, format);

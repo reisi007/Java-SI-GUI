@@ -5,5 +5,5 @@ package at.reisisoft.sigui.l10n;
  */
 public interface TranslationKey {
 
-    String toString();
+    String getTranslationKey();
 }

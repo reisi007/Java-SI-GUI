@@ -1,6 +1,7 @@
 package at.reisisoft.sigui.downloader;
 
 import at.reisisoft.sigui.DownloadInfo;
+import at.reisisoft.sigui.DownloadType;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -94,17 +95,17 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
     }
 
     private String getRegex4Main(DownloadInfo.DownloadLocation base) {
-        if (base.getDownloadType() == DownloadInfo.DownloadType.Daily)
+        if (base.getDownloadType() == DownloadType.Daily)
             return base.getVersionPrefix() + ".+?" + base.getOs().getOSShortName() + "_" + base.getA().getInFilenameArchitecture().toLowerCase() + "_[^h].+?[^sdk]\\." + base.getOs().getFileExtension() + '"';
         return "Lib(O_|re).+?" + base.getA().getInFilenameArchitecture().toLowerCase() + ("exe".equalsIgnoreCase(base.getOs().getFileExtension()) ? ".+?install_multi.exe\"" : "\\." + base.getOs().getFileExtension() + "[^\\.asc]");
     }
 
     private String getRegex4Sdk(DownloadInfo.DownloadLocation base) {
-        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + '"';
+        return (base.getDownloadType() == DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?sdk\\." + base.getOs().getFileExtension() + '"';
     }
 
     private String getRegex4Hp(DownloadInfo.DownloadLocation base, String hpLang) {
-        return (base.getDownloadType() == DownloadInfo.DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + '"';
+        return (base.getDownloadType() == DownloadType.Daily ? base.getVersionPrefix() : "Lib") + ".+?helppack_" + hpLang + "\\." + base.getOs().getFileExtension() + '"';
     }
 
 

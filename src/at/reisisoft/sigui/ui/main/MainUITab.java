@@ -10,7 +10,7 @@ public enum MainUITab implements TranslationKey {
     public static final String PREFIX = MainUiTranslation.PREFIX + "tabs.";
 
     @Override
-    public String toString() {
-        return PREFIX + super.toString().toLowerCase().replace('_', '.');
+    public String getTranslationKey() {
+        return PREFIX + toString().toLowerCase();
     }
 }
