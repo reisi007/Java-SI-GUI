@@ -1,7 +1,7 @@
 package at.reisisoft.sigui.ui.main;
 
-import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.l10n.ExceptionTranslation;
+import at.reisisoft.sigui.l10n.LocalisationSupport;
 import javafx.scene.control.Tab;
 
 /**
@@ -9,38 +9,18 @@ import javafx.scene.control.Tab;
  */
 public class MainUiTabProvider {
 
-    public static void fillTab(MainUITab key, Tab tab, LocalisationSupport localisationSupport) {
+    public static Tab fillTab(MainUITab key, LocalisationSupport localisationSupport) {
         switch (key) {
             case DOWNLOAD:
-                fillDownload(tab, localisationSupport);
-                break;
+                return MainUiDownloadTab.getInstance(localisationSupport);
             case INSTALL:
-                fillInstall(tab, localisationSupport);
-                break;
+                return MainUiInstallTab.getInstance(localisationSupport);
             case MANAGER:
-                fillManager(tab, localisationSupport);
-                break;
+                return MainUiManagerTab.getInstance(localisationSupport);
             case SETTINGS:
-                fillSettings(tab, localisationSupport);
-                break;
+                return MainUiSettingsTab.getInstance(localisationSupport);
             default:
                 throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, localisationSupport.getString(MainUiTranslation.TAB)));
         }
-    }
-
-    private static void fillDownload(Tab t, LocalisationSupport localisationSupport) {
-        //TODO Implement
-    }
-
-    private static void fillInstall(Tab t, LocalisationSupport localisationSupport) {
-        //TODO Implement
-    }
-
-    private static void fillManager(Tab t, LocalisationSupport localisationSupport) {
-        //TODO Implement
-    }
-
-    private static void fillSettings(Tab t, LocalisationSupport localisationSupport) {
-        //TODO Implement
     }
 }

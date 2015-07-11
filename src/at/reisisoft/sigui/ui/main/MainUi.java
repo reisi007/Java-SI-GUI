@@ -23,7 +23,7 @@ public class MainUi extends Application {
     private static final Path settingsPath = new File(".").toPath().resolve("si-gui-java.settings.xml");
     private static SiGuiSettings _instance = null;
 
-    public SiGuiSettings getInstance() {
+    public static SiGuiSettings getInstance() {
         if (_instance == null)
             _instance = SiGuiSettings.load(settingsPath);
         System.out.println(_instance.toString());//TODO Remove after testing
@@ -48,10 +48,9 @@ public class MainUi extends Application {
         primaryStage.setScene(mainScene);
         MainUITab[] tabs = MainUITab.values();
         for (MainUITab uiTab : tabs) {
-            Tab cur = new Tab(localisationSupport.getString(uiTab));
+            Tab cur = MainUiTabProvider.fillTab(uiTab, localisationSupport);
             mainUITabs.put(uiTab, cur);
             tabPane.getTabs().add(cur);
-            MainUiTabProvider.fillTab(uiTab, cur, localisationSupport);
         }
         //Set UI Strings
         primaryStage.setTitle(localisationSupport.getString(MainUiTranslation.APP_NAME));
