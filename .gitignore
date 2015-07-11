@@ -4,6 +4,7 @@
 .mtj.tmp/
 
 out/*
+si-gui-java.settings.xml
 
 # Package Files #
 *.jar
