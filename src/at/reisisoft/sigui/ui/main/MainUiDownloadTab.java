@@ -8,10 +8,8 @@ import at.reisisoft.sigui.settings.SiGuiSettings;
 import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
 import com.google.common.util.concurrent.ListenableFuture;
 import javafx.application.Platform;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Tab;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -28,7 +26,8 @@ public class MainUiDownloadTab extends Tab {
 
     private static MainUiDownloadTab instance = null;
     private final Accordion accordion = new Accordion();
-    private HBox firstRow = new HBox(5);
+    private CheckBox main, sdk, hp;
+    private HBox firstRow = new HBox(8), secondRow = new HBox(8), thirdrow = new HBox(8);
 
     public static MainUiDownloadTab getInstance(LocalisationSupport localisationSupport) {
         if (instance == null) {
@@ -45,18 +44,21 @@ public class MainUiDownloadTab extends Tab {
         this.localisationSupport = localisationSupport;
         VBox mainContent = new VBox();
         setContent(mainContent);
+        firstRow.setAlignment(Pos.CENTER);
+        secondRow.setAlignment(Pos.CENTER);
+        thirdrow.setAlignment(Pos.CENTER);
+        mainContent.getChildren().addAll(firstRow, secondRow, thirdrow);
         //First row -> Download entry accordion + Update accordion -> Progressindicator
-
-        mainContent.getChildren().add(firstRow);
         updateAccordeon(null);
         Button button = new Button(localisationSupport.getString(MainUiTranslation.DOWNLOAD_UPDATE));
+
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setVisible(false);
         firstRow.getChildren().addAll(accordion, button, progressIndicator);
 
         button.setOnAction(event -> {
+            progressIndicator.setVisible(true);
             Runnable r = () -> {
-                Platform.runLater(() -> progressIndicator.setVisible(true));
                 SiGuiSettings settings = MainUi.getSettingsInstance();
                 List<ListenableFuture<CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation>>> futureList = new LinkedList<>();
                 try (DownloadInfo downloadInfo = new DownloadInfo()) {
@@ -76,6 +78,13 @@ public class MainUiDownloadTab extends Tab {
             };
             new Thread(r).start();
         });
+
+        //Second row -> 3 checkboxes main, help, sdk
+        main = new CheckBox(localisationSupport.getString(MainUiTranslation.INSTALLER_MAIN));
+        sdk = new CheckBox(localisationSupport.getString(MainUiTranslation.INSTALLER_SDK));
+        hp = new CheckBox(localisationSupport.getString(MainUiTranslation.INSTALLER_HELP));
+
+        secondRow.getChildren().addAll(mainContent, hp, sdk);
     }
 
     @RunsOnJavaFXThread

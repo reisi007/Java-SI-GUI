@@ -44,7 +44,7 @@ public class MainUi extends Application {
         //Configure tabbed layout
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        Scene mainScene = new Scene(tabPane, 600, 400);
+        Scene mainScene = new Scene(tabPane, 475, 270);
         primaryStage.setScene(mainScene);
         MainUITab[] tabs = MainUITab.values();
         for (MainUITab uiTab : tabs) {
@@ -52,6 +52,7 @@ public class MainUi extends Application {
             mainUITabs.put(uiTab, cur);
             tabPane.getTabs().add(cur);
         }
+        //3 cherckboxes
         //Set UI Strings
         primaryStage.setTitle(localisationSupport.getString(MainUiTranslation.APP_NAME));
         //Show stage

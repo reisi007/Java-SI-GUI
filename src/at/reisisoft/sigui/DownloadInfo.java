@@ -15,10 +15,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -58,6 +60,17 @@ public class DownloadInfo implements AutoCloseable {
             Stream<Collection<DownloadLocation>> step1 = Stream.of(getStableDownloads(a, os), getTestingDownloads(a, os), getDailyBuilds(a, os), getArchiveDownloads(a, os)).map(Utils.mapFuture());
             Stream<CollectionHashMap.KeyValuePair<DownloadType, DownloadLocation>> step2 = step1.collect(Utils.collectCollectionToStream()).map(entry -> new CollectionHashMap.KeyValuePair<>(entry.getDownloadType(), entry));
             return step2.collect(Utils.collectToCollectionHashmap(TreeSet<DownloadLocation>::new));
+        });
+    }
+
+    public ListenableFuture<Collection<String>> getAllLanguages(DownloadLocation location) {
+        return executor.submit(() -> {
+            Collection<String> collection = new LinkedList<>();
+            String html = downloadFromUrl(location.getUrl());
+            Pattern pattern = Pattern.compile("helppack_[a-z]{2}(-[A-Z]{2})?");
+            int cutOff = 9;
+            //TODO take every second
+            return collection;
         });
     }
 

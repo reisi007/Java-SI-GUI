@@ -10,13 +10,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 public class Main {
     private static Scanner console = new Scanner(System.in);
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+    public static void main(String[] args) throws Exception {
+        //cmdDownload();
+        DownloadInfo.DownloadLocation location = new DownloadInfo.DownloadLocation("Testing 5.0", "5.0.0", "http://download.documentfoundation.org/libreoffice/testing/5.0.0/win/x86_64/", Architecture.X86_64, OS.WinMsi);
+        System.out.println(location);
+        try (DownloadInfo info = new DownloadInfo()) {
+            info.getAllLanguages(location);
+        }
+    }
+
+    private static void cmdDownload() throws Exception {
         try (DownloadInfo d = new DownloadInfo();
              DownloadManager downloadManager = new DownloadManager()) {
             System.out.println("Hi! I am SI-GUI!");
