@@ -2,6 +2,7 @@ package at.reisisoft.sigui.ui.main;
 
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import javafx.scene.control.Tab;
+import javafx.stage.Window;
 
 import java.util.Objects;
 
@@ -12,7 +13,7 @@ public class MainUiManagerTab extends Tab {
 
     private static MainUiManagerTab instance = null;
 
-    public static MainUiManagerTab getInstance(LocalisationSupport localisationSupport) {
+    public static MainUiManagerTab getInstance(LocalisationSupport localisationSupport, Window window) {
         if (instance == null) {
             Objects.requireNonNull(localisationSupport);
             instance = new MainUiManagerTab(localisationSupport);

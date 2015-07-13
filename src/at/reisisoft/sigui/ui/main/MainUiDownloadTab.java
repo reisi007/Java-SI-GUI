@@ -13,6 +13,7 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -35,22 +37,25 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
     private final ChoiceBox<String> languages = new ChoiceBox<>();
     private DownloadManager downloadManager = new DownloadManager();
     private ProgressBar progressBar = new ProgressBar(0);
+    private final Window window;
 
-    public static MainUiDownloadTab getInstance(LocalisationSupport localisationSupport) {
+    public static MainUiDownloadTab getInstance(LocalisationSupport localisationSupport, Window window) {
         if (instance == null) {
             Objects.requireNonNull(localisationSupport);
-            instance = new MainUiDownloadTab(localisationSupport);
+            instance = new MainUiDownloadTab(localisationSupport, window);
         }
         return instance;
     }
 
     private final LocalisationSupport localisationSupport;
 
-    private MainUiDownloadTab(LocalisationSupport localisationSupport) {
+    private MainUiDownloadTab(LocalisationSupport localisationSupport, Window window) {
         super(localisationSupport.getString(MainUITab.DOWNLOAD));
+        this.localisationSupport = localisationSupport;
+        this.window = window;
+
         final HBox firstRow = new HBox(8), secondRow = new HBox(8), thirdrow = new HBox(8), fourthRow = new HBox(8), fifthRow = new HBox(8), sixthRow = new HBox(8);
         final SiGuiSettings settings = MainUi.getSettingsInstance();
-        this.localisationSupport = localisationSupport;
         VBox mainContent = new VBox(6);
         setContent(mainContent);
         firstRow.setAlignment(Pos.CENTER);
@@ -193,6 +198,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
             progressBar.progressProperty().set(0d);
         });
         progressBar.setMinWidth(200);
+        progressBar.setMaxWidth(Double.MAX_VALUE);
         downloadManager.addTotalDownloadProgressListener(this::updateProgressbar);
         sixthRow.getChildren().addAll(progressBar, cancel);
 
@@ -211,9 +217,20 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
 
         if (downloads != null)
             settings.setCachedDownloads(downloads);
+        downloads = settings.getCachedDownloads();
+        accordion.getPanes().clear();
+        Set<DownloadType> keySet = downloads.getKeySet();
+        if (keySet.size() == 0)
+            keySet = new TreeSet<>(Arrays.asList(DownloadType.values()));
+        for (DownloadType key : downloads.getKeySet()) {
+            SortedSet<DownloadInfo.DownloadLocation> cur = downloads.get(key).orElse(Collections.emptySortedSet());
+            ObservableList<DownloadInfo.DownloadLocation> observableList = FXCollections.observableArrayList(cur);
+            DownloadAccordion.DownloadPane dlPane = new DownloadAccordion.DownloadPane(key, localisationSupport);
+            dlPane.getChoiceBox().setItems(observableList);
+            dlPane.getChoiceBox().setMaxWidth(250);
+            accordion.getPanes().add(dlPane);
+        }
 
-        Accordion a = DataToUiUtils.getDownloadPane(settings.getCachedDownloads(), localisationSupport, accordion);
-        assert a == accordion : "UI accordeon is out of sync!";
     }
 
     @RunsOnJavaFXThread

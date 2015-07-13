@@ -102,4 +102,12 @@ public enum OS {
     private static String getOSName() {
         return System.getProperty("os.name").toLowerCase();
     }
+
+    public static OS fromFileName(String fileName) {
+        for (OS os : OS.detect()) {
+            if (fileName.endsWith(os.getFileExtension()))
+                return os;
+        }
+        throw new IllegalArgumentException("No OS known");
+    }
 }

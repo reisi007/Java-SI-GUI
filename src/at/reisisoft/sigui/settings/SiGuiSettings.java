@@ -46,7 +46,7 @@ public class SiGuiSettings implements Serializable {
         return _xstream;
     }
 
-    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER, DL_LANGUAGE}
+    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER, DL_LANGUAGE, PATH_MAIN, PATH_SDK, PATH_HP, PATH_LANGPACK, INSTALL_PATH_LAST_FILEOPENED}
 
     public enum BooleanSettingKey {RENAME_FILES, CB_MAIN_TICKED, CB_HELP_TICKED, CB_SDK_TICKED, CB_LANGPACK_TICKED}
 
