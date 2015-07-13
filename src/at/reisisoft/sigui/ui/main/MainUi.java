@@ -1,6 +1,5 @@
 package at.reisisoft.sigui.ui.main;
 
-import at.reisisoft.sigui.DownloadInfo;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
 import javafx.application.Application;
@@ -65,7 +64,6 @@ public class MainUi extends Application {
 
     @Override
     public void stop() throws Exception {
-        getSettingsInstance().save(settingsPath, localisationSupport);
         List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport));
         list.forEach(e -> {
             try {
@@ -74,6 +72,7 @@ public class MainUi extends Application {
                 e1.printStackTrace();
             }
         });
+        getSettingsInstance().save(settingsPath, localisationSupport);
         super.stop();
     }
 }

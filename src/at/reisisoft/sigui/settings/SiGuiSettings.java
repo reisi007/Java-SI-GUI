@@ -53,6 +53,16 @@ public class SiGuiSettings implements Serializable {
     private Map<StringSettingKey, String> stringSettings = new EnumMap<>(StringSettingKey.class);
     private Map<BooleanSettingKey, Boolean> booleanSettings = new EnumMap<>(BooleanSettingKey.class);
 
+    public Map<DownloadType, DownloadInfo.DownloadLocation> getSelectedDownloadLocations() {
+        return selectedDownloadLocations;
+    }
+
+    public void setSelectedDownloadLocations(Map<DownloadType, DownloadInfo.DownloadLocation> selectedDownloadLocations) {
+        this.selectedDownloadLocations = selectedDownloadLocations;
+    }
+
+    private Map<DownloadType, DownloadInfo.DownloadLocation> selectedDownloadLocations = Collections.emptyMap();
+
     public Collection<String> getAvailableLanguages() {
         return availableLanguages;
     }

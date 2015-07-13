@@ -96,7 +96,6 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
         }
     }
 
-
     C remove(Object key);
 
     int size();

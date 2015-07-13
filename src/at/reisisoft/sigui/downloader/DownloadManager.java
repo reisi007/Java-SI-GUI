@@ -263,6 +263,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
                 lf.cancel(true);
             progressInfoMap.clear();
             listenableFutureMap.clear();
+            hasStarted = false;
         }
 
         @Override
@@ -271,6 +272,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
             ListenableFuture<?> lf = listenableFutureMap.remove(toCancel);
             if (lf != null)
                 lf.cancel(true);
+            hasStarted = progressInfoMap.size() > 0;
         }
     }
 }

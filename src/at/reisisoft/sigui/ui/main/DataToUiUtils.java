@@ -1,13 +1,13 @@
 package at.reisisoft.sigui.ui.main;
 
+import at.reisisoft.sigui.DownloadInfo;
 import at.reisisoft.sigui.DownloadType;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
+import at.reisisoft.sigui.ui.controls.DownloadAccordion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TitledPane;
 
 import java.util.*;
 
@@ -16,25 +16,21 @@ import java.util.*;
  */
 public class DataToUiUtils {
 
-    public static <V, C extends Collection<V>> Accordion getAccordeonFromCollectionHashMap(CollectionHashMap<DownloadType, C, V> collectionHashMap, LocalisationSupport localisationSupport, Accordion old) {
-        Accordion accordion = Optional.ofNullable(old).orElse(new Accordion());
+    public static Accordion getDownloadPane(CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> collectionHashMap, LocalisationSupport localisationSupport, DownloadAccordion old) {
+        Accordion accordion = Optional.ofNullable(old).orElse(new DownloadAccordion());
         accordion.getPanes().clear();
         Set<DownloadType> keySet = collectionHashMap.getKeySet();
         if (keySet.size() == 0)
             keySet = new TreeSet<>(Arrays.asList(DownloadType.values()));
         for (DownloadType key : collectionHashMap.getKeySet()) {
-            C cur = collectionHashMap.get(key).orElse((C) Collections.emptyList());
-            ObservableList<V> observableList = FXCollections.observableArrayList(cur);
-            ChoiceBox<V> choiceBox = new ChoiceBox<>(observableList);
-            choiceBox.setMaxWidth(250);
-            TitledPane pane = new TitledPane(localisationSupport.getString(key), choiceBox);
-            accordion.getPanes().add(pane);
+            SortedSet<DownloadInfo.DownloadLocation> cur = collectionHashMap.get(key).orElse(Collections.emptySortedSet());
+            ObservableList<DownloadInfo.DownloadLocation> observableList = FXCollections.observableArrayList(cur);
+            DownloadAccordion.DownloadPane dlPane = new DownloadAccordion.DownloadPane(key, localisationSupport);
+            dlPane.getChoiceBox().setItems(observableList);
+            dlPane.getChoiceBox().setMaxWidth(250);
+            accordion.getPanes().add(dlPane);
         }
         return accordion;
 
-    }
-
-    public static <V, C extends Collection<V>> Accordion getAccordeonFromCollectionHashMap(CollectionHashMap<DownloadType, C, V> collectionHashMap, LocalisationSupport localisationSupport) {
-        return getAccordeonFromCollectionHashMap(collectionHashMap, localisationSupport, null);
     }
 }

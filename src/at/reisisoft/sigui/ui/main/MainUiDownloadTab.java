@@ -8,8 +8,10 @@ import at.reisisoft.sigui.downloader.DownloadProgressInfo;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
 import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
+import at.reisisoft.sigui.ui.controls.DownloadAccordion;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +31,7 @@ import java.util.stream.Stream;
 public class MainUiDownloadTab extends Tab implements AutoCloseable {
 
     private static MainUiDownloadTab instance = null;
-    private final Accordion accordion = new Accordion();
+    private final DownloadAccordion accordion = new DownloadAccordion();
     private final ChoiceBox<String> languages = new ChoiceBox<>();
     private DownloadManager downloadManager = new DownloadManager();
     private ProgressBar progressBar = new ProgressBar(0);
@@ -61,6 +63,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
         mainContent.getChildren().addAll(firstRow, secondRow, thirdrow, fourthRow, fifthRow, sixthRow);
         //First row -> Download entry accordion + Update accordion -> Progressindicator
         updateAccordeon(null);
+        accordion.setSelectedDownloadLocations(settings.getSelectedDownloadLocations());
         Button button = new Button(localisationSupport.getString(MainUiTranslation.DOWNLOAD_UPDATE));
 
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -95,9 +98,9 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                                 ObservableList<String> observableList = languages.getItems();
                                 observableList.clear();
                                 observableList.addAll(settings.getAvailableLanguages());
+                                accordion.setSelectedDownloadLocations(settings.getSelectedDownloadLocations());
                                 progressIndicator.setVisible(false);
                             }
-
                     );
                 }
             };
@@ -150,26 +153,32 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
             @Override
             public void handle(ActionEvent event) {
                 Runnable r = () -> {
-                    DownloadInfo.DownloadLocation location = getAccordeonDlLocation();
-                    String lang = languages.selectionModelProperty().get().getSelectedItem();
-                    String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElse(Files.createTempDir().toString());
-                    List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
-                    if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
-                        entries.add(downloadManager.getDownloadFileMain(location));
-                    }
-                    if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
-                        entries.add(downloadManager.getDownloadFileHelp(location, lang));
-                    }
-                    if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
-                        entries.add(downloadManager.getDownloadFileSdk(location));
-                    }
-                    if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
-                        entries.add(downloadManager.getDownloadFileLangPack(location, lang));
-                    }
-                    entries.stream().filter(Optional::isPresent).map(Optional::get).map(e -> {
-                        e.setTo(Paths.get(dlPath, e.getFilename()));
-                        return e;
-                    }).forEach(downloadManager::submit);
+                    getAccordeonDlLocation().ifPresent(location -> {
+                        Platform.runLater(() -> startDL.setDisable(true));
+                        String lang = languages.selectionModelProperty().get().getSelectedItem();
+                        String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElse(Files.createTempDir().toString());
+                        List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
+                        if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
+                            entries.add(downloadManager.getDownloadFileMain(location));
+                        }
+                        if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
+                            entries.add(downloadManager.getDownloadFileHelp(location, lang));
+                        }
+                        if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
+                            entries.add(downloadManager.getDownloadFileSdk(location));
+                        }
+                        if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
+                            entries.add(downloadManager.getDownloadFileLangPack(location, lang));
+                        }
+                        entries.stream().filter(Optional::isPresent).map(Optional::get).map(e -> {
+                            e.setTo(Paths.get(dlPath, e.getFilename()));
+                            return e;
+                        }).map(downloadManager::submit).forEach(lf -> lf.addListener(() -> {
+                            if (!downloadManager.getTotalDownloadProgress().hasStarted())
+                                Platform.runLater(() -> progressBar.progressProperty().set(0d));
+                        }, MoreExecutors.sameThreadExecutor()));
+
+                    });
                 };
                 new Thread(r).start();
             }
@@ -179,6 +188,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
         Button cancel = new Button("X");
         cancel.setOnAction(event -> {
             downloadManager.cancel();
+            startDL.setDisable(false);
             //Reset progress bar
             progressBar.progressProperty().set(0d);
         });
@@ -202,7 +212,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
         if (downloads != null)
             settings.setCachedDownloads(downloads);
 
-        Accordion a = DataToUiUtils.getAccordeonFromCollectionHashMap(settings.getCachedDownloads(), localisationSupport, accordion);
+        Accordion a = DataToUiUtils.getDownloadPane(settings.getCachedDownloads(), localisationSupport, accordion);
         assert a == accordion : "UI accordeon is out of sync!";
     }
 
@@ -213,15 +223,20 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        SiGuiSettings settings = MainUi.getSettingsInstance();
+        settings.setSelectedDownloadLocations(accordion.getSelectedDownloadLocations());
         if (downloadManager != null)
             downloadManager.close();
     }
 
-    private DownloadInfo.DownloadLocation getAccordeonDlLocation() throws IllegalStateException {
+    private Optional<DownloadInfo.DownloadLocation> getAccordeonDlLocation() throws IllegalStateException {
         TitledPane pane = accordion.getExpandedPane();
-        ChoiceBox cb = (ChoiceBox) pane.getContent();
-        SingleSelectionModel<DownloadInfo.DownloadLocation> selectionModel = (SingleSelectionModel<DownloadInfo.DownloadLocation>) cb.selectionModelProperty().get();
-        return selectionModel.getSelectedItem();
+        if (pane == null)
+            return Optional.empty();
+        if (!(pane instanceof DownloadAccordion.DownloadPane))
+            throw new IllegalStateException("DownloadPane is dirty! " + pane.getClass());
+        DownloadAccordion.DownloadPane dlPane = (DownloadAccordion.DownloadPane) pane;
+        return Optional.of(dlPane.getChoiceBox().getValue());
     }
 
 
