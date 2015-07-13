@@ -1,5 +1,6 @@
 package at.reisisoft.sigui.ui.main;
 
+import at.reisisoft.sigui.DownloadInfo;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
 import javafx.application.Application;
@@ -10,7 +11,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -41,10 +44,11 @@ public class MainUi extends Application {
         Locale.setDefault(settings.getUserLanguage());
         //Get localisation support
         localisationSupport = LocalisationSupport.getInstance();
+        SiGuiSettings.setLocalisationSupport(localisationSupport);
         //Configure tabbed layout
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        Scene mainScene = new Scene(tabPane, 475, 270);
+        Scene mainScene = new Scene(tabPane, 500, 300);
         primaryStage.setScene(mainScene);
         MainUITab[] tabs = MainUITab.values();
         for (MainUITab uiTab : tabs) {
@@ -61,8 +65,15 @@ public class MainUi extends Application {
 
     @Override
     public void stop() throws Exception {
-        //TODO cleanup
         getSettingsInstance().save(settingsPath, localisationSupport);
+        List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport));
+        list.forEach(e -> {
+            try {
+                e.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        });
         super.stop();
     }
 }

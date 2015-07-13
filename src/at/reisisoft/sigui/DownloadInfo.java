@@ -20,6 +20,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -65,11 +66,19 @@ public class DownloadInfo implements AutoCloseable {
 
     public ListenableFuture<Collection<String>> getAllLanguages(DownloadLocation location) {
         return executor.submit(() -> {
+            final int innerForMax = 5 + (location.getOs().isWindows() ? 0 : 6);
             Collection<String> collection = new LinkedList<>();
             String html = downloadFromUrl(location.getUrl());
-            Pattern pattern = Pattern.compile("helppack_[a-z]{2}(-[A-Z]{2})?");
-            int cutOff = 9;
-            //TODO take every second
+            Pattern pattern = Pattern.compile("helppack_[a-z]{2,3}(-[A-Za-z]{2,})?");
+            Matcher matcher = pattern.matcher(html);
+            while (matcher.find()) {
+                String tmp = matcher.group();
+                tmp = tmp.substring(9, tmp.length());
+                collection.add(tmp);
+                for (int i = 0; i < innerForMax; i++)
+                    if (!matcher.find())
+                        i = Integer.MAX_VALUE;
+            }
             return collection;
         });
     }

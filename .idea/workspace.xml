@@ -7,15 +7,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83aca81c-c1d5-444d-ad94-5b59ae7a7a80" name="Default" comment="made downloadProgress working. Maybe a reset needed">
-      <change type="DELETED" beforePath="D:\Github\Java-SI-GUI\src\at\reisisoft\sigui\OSSettings.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages_de.properties" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages_de.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java" />
     </list>
     <ignored path="SI GUI.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,46 +31,93 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="MainUiTranslation.java" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.14718615">
+                    <caret line="8" column="135" selection-start-line="8" selection-start-column="135" selection-end-line="8" selection-end-column="135" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="SI GUI" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MainUiDownloadTab.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainUiDownloadTab.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="86" column="61" selection-start-line="86" selection-start-column="61" selection-end-line="86" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.3402985">
+              <caret line="169" column="0" selection-start-line="169" selection-start-column="0" selection-end-line="169" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#10839#10840#0" expanded="true" />
+                <element signature="e#10908#10909#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java">
+      <file leaf-file-name="SiGuiSettings.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="53" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
+              <caret line="85" column="26" selection-start-line="85" selection-start-column="26" selection-end-line="85" selection-end-column="26" />
+              <folding>
+                <element signature="e#2999#3000#0" expanded="true" />
+                <element signature="e#3066#3067#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DownloadManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="78" column="98" selection-start-line="78" selection-start-column="98" selection-end-line="78" selection-end-column="98" />
+              <folding>
+                <element signature="e#1133#1134#0" expanded="true" />
+                <element signature="e#1177#1178#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Messages.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties">
+          <provider selected="true" editor-type-id="ResourceBundle">
+            <state />
+          </provider>
+          <provider editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DownloadInfo.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java">
+      <file leaf-file-name="MainUi.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.46045694">
-              <caret line="71" column="36" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="60" column="34" selection-start-line="60" selection-start-column="34" selection-end-line="60" selection-end-column="34" />
               <folding>
-                <element signature="e#1525#1526#0" expanded="true" />
-                <element signature="e#1579#1580#0" expanded="true" />
-                <element signature="e#3741#3742#0" expanded="true" />
-                <element signature="e#3776#3777#0" expanded="true" />
-                <element signature="e#4060#4061#0" expanded="true" />
-                <element signature="e#4118#4119#0" expanded="true" />
+                <element signature="e#1168#1169#0" expanded="true" />
+                <element signature="e#1196#1197#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -100,7 +147,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/installation/AbstractInstallationProvider.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/installation/MacInstallationTqElement.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/installation/WinMsiInstallationTqElement.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/installation/WinExeInstallationTqElement.java" />
@@ -133,24 +179,25 @@
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/RunsOnjavaFXThread.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/Utils.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/TranslationKey.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUITab.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/LocalisationSupport.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadType.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/DataToUiUtils.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/collection/SortedSetHashMap.java" />
         <option value="$PROJECT_DIR$/SI GUI.iml" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/README.html" />
         <option value="$PROJECT_DIR$/si-gui-java.settings.xml" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/concurrent/VersionCallable.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java" />
       </list>
     </option>
   </component>
@@ -191,9 +238,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -532,6 +578,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -568,7 +615,7 @@
       <recent name="at.reisisoft.concurrent" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Application.UI">
     <configuration default="false" name="Main" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="at.reisisoft.sigui.Main" />
@@ -761,11 +808,11 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3368532" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24604012" sideWeight="0.50208336" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35875404" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35797253" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3559322" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -773,7 +820,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25976768" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25026852" sideWeight="0.49791667" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -806,8 +853,20 @@
           <properties />
           <option name="timeStamp" value="46" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java</url>
+          <line>35</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java</url>
+          <line>169</line>
+          <properties />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="49" />
+      <option name="time" value="58" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -816,13 +875,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/java/util/Objects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="200" column="24" selection-start-line="200" selection-start-column="24" selection-end-line="200" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_20/src.zip!/javax/xml/bind/JAXB.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
@@ -947,13 +999,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/javafx-src.zip!/javafx/scene/layout/Region.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6779661">
-          <caret line="1139" column="22" selection-start-line="1139" selection-start-column="22" selection-end-line="1139" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/javafx-src.zip!/com/sun/javafx/application/PlatformImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.27457628">
@@ -983,14 +1028,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.47627118">
           <caret line="103" column="11" selection-start-line="103" selection-start-column="11" selection-end-line="103" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/DataToUiUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2774755">
-          <caret line="24" column="28" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1031,13 +1068,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31965813">
-          <caret line="11" column="34" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/LocalisationSupport.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1058,7 +1088,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1129,8 +1159,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="199" column="48" selection-start-line="199" selection-start-column="48" selection-end-line="199" selection-end-column="48" />
           <folding>
-            <element signature="e#4256#4257#0" expanded="true" />
-            <element signature="e#4295#4296#0" expanded="true" />
+            <element signature="e#4256#4257#0" expanded="false" />
+            <element signature="e#4295#4296#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1143,37 +1173,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/si-gui-java.settings.xml">
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/src.zip!/java/util/Map.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.02905983">
-          <caret line="1" column="29" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.33236152">
+          <caret line="211" column="6" selection-start-line="211" selection-start-column="6" selection-end-line="211" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java">
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38955387">
-          <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="53" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiTranslation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23901582">
-          <caret line="8" column="82" selection-start-line="8" selection-start-column="82" selection-end-line="8" selection-end-column="82" />
+        <state vertical-scroll-proportion="0.14718615">
+          <caret line="8" column="135" selection-start-line="8" selection-start-column="135" selection-end-line="8" selection-end-column="135" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_45/javafx-src.zip!/javafx/scene/layout/Region.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33275864">
+          <caret line="1139" column="22" selection-start-line="1139" selection-start-column="22" selection-end-line="1139" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5603448">
+          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
           <folding>
-            <element signature="e#376#377#0" expanded="true" />
-            <element signature="e#450#451#0" expanded="true" />
+            <element signature="e#4177#4178#0" expanded="true" />
+            <element signature="e#4212#4213#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/ExceptionTranslation.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75922674">
-          <caret line="54" column="23" selection-start-line="54" selection-start-column="23" selection-end-line="54" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.17586207">
+          <caret line="6" column="66" selection-start-line="6" selection-start-column="66" selection-end-line="6" selection-end-column="66" />
           <folding />
         </state>
       </provider>
@@ -1189,35 +1235,55 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/DataToUiUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="86" column="61" selection-start-line="86" selection-start-column="61" selection-end-line="86" selection-end-column="61" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="53" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
+        <state vertical-scroll-proportion="0.5017241">
+          <caret line="29" column="36" selection-start-line="29" selection-start-column="36" selection-end-line="29" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/DownloadInfo.java">
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46045694">
-          <caret line="71" column="36" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="98" selection-start-line="78" selection-start-column="98" selection-end-line="78" selection-end-column="98" />
           <folding>
-            <element signature="e#1525#1526#0" expanded="true" />
-            <element signature="e#1579#1580#0" expanded="true" />
-            <element signature="e#3741#3742#0" expanded="true" />
-            <element signature="e#3776#3777#0" expanded="true" />
-            <element signature="e#4060#4061#0" expanded="true" />
-            <element signature="e#4118#4119#0" expanded="true" />
+            <element signature="e#1133#1134#0" expanded="true" />
+            <element signature="e#1177#1178#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="60" column="34" selection-start-line="60" selection-start-column="34" selection-end-line="60" selection-end-column="34" />
+          <folding>
+            <element signature="e#1168#1169#0" expanded="true" />
+            <element signature="e#1196#1197#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/settings/SiGuiSettings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="26" selection-start-line="85" selection-start-column="26" selection-end-line="85" selection-end-column="26" />
+          <folding>
+            <element signature="e#2999#3000#0" expanded="true" />
+            <element signature="e#3066#3067#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3402985">
+          <caret line="169" column="0" selection-start-line="169" selection-start-column="0" selection-end-line="169" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#10839#10840#0" expanded="true" />
+            <element signature="e#10908#10909#0" expanded="true" />
           </folding>
         </state>
       </provider>

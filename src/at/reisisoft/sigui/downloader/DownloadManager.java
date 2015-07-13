@@ -67,12 +67,17 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
         return getDownloadFile(base, getRegex4Main(base));
     }
 
+
     public Optional<Entry> getDownloadFileSdk(DownloadInfo.DownloadLocation base) {
         return getDownloadFile(base, getRegex4Sdk(base));
     }
 
     public Optional<Entry> getDownloadFileHelp(DownloadInfo.DownloadLocation base, String hpLang) {
         return getDownloadFile(base, getRegex4Hp(base, hpLang));
+    }
+
+    public Optional<Entry> getDownloadFileLangPack(DownloadInfo.DownloadLocation base, String lang) {
+        return Optional.empty();//TODO Implement
     }
 
     private Optional<Entry> getDownloadFile(DownloadInfo.DownloadLocation base, String regex) {

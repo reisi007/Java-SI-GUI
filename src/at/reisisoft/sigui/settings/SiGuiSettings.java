@@ -2,7 +2,9 @@ package at.reisisoft.sigui.settings;
 
 import at.reisisoft.sigui.*;
 import at.reisisoft.sigui.collection.CollectionHashMap;
+import at.reisisoft.sigui.l10n.ExceptionTranslation;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
+import at.reisisoft.sigui.l10n.TranslationKey;
 import com.thoughtworks.xstream.XStream;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -19,6 +21,23 @@ import java.util.*;
 @XmlRootElement(namespace = "http://sigui.reisisoft.com/java", name = "settings")
 public class SiGuiSettings implements Serializable {
 
+    private static LocalisationSupport localisationSupport;
+
+    public static LocalisationSupport getLocalisationSupport() {
+        return localisationSupport;
+    }
+
+    public static void setLocalisationSupport(LocalisationSupport localisationSupport) {
+        Objects.requireNonNull(localisationSupport);
+        SiGuiSettings.localisationSupport = localisationSupport;
+    }
+
+    private static String getLocalisedString(TranslationKey key, Object... format) {
+        if (localisationSupport == null)
+            return key.toString();
+        return localisationSupport.getString(key, format);
+    }
+
     private static XStream _xstream = null;
 
     public static XStream getXStream() {
@@ -27,12 +46,22 @@ public class SiGuiSettings implements Serializable {
         return _xstream;
     }
 
-    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER}
+    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER, DL_LANGUAGE}
 
-    public enum BooleanSettingKey {RENAME_FILES}
+    public enum BooleanSettingKey {RENAME_FILES, CB_MAIN_TICKED, CB_HELP_TICKED, CB_SDK_TICKED, CB_LANGPACK_TICKED}
 
     private Map<StringSettingKey, String> stringSettings = new EnumMap<>(StringSettingKey.class);
     private Map<BooleanSettingKey, Boolean> booleanSettings = new EnumMap<>(BooleanSettingKey.class);
+
+    public Collection<String> getAvailableLanguages() {
+        return availableLanguages;
+    }
+
+    public void setAvailableLanguages(Collection<String> availableLanguages) {
+        this.availableLanguages = availableLanguages;
+    }
+
+    private Collection<String> availableLanguages = Collections.emptyList();
 
     private List<OS> oss = Arrays.asList(OS.detect());
     private List<Architecture> architectures = Arrays.asList(Architecture.detect());
@@ -40,26 +69,37 @@ public class SiGuiSettings implements Serializable {
     private CollectionHashMap<DownloadType, SortedSet<DownloadInfo.DownloadLocation>, DownloadInfo.DownloadLocation> cachedDownloads = CollectionHashMap.empty();
     private Locale userLanguage = Locale.getDefault();
 
-    public Optional<String> getStringSettings(StringSettingKey key) {
+    public SiGuiSettings() {
+        set(BooleanSettingKey.CB_MAIN_TICKED, true);
+        set(BooleanSettingKey.CB_HELP_TICKED, true);
+        set(BooleanSettingKey.CB_SDK_TICKED, false);
+        set(BooleanSettingKey.CB_LANGPACK_TICKED, false);
+        set(StringSettingKey.DOWNLOADFOLDER, com.google.common.io.Files.createTempDir().toString());
+    }
+
+    public Optional<String> get(StringSettingKey key) {
         return Optional.ofNullable(stringSettings.get(key));
     }
 
-    public void setSetting(StringSettingKey key, String value) {
+    public void set(StringSettingKey key, String value) {
         Objects.requireNonNull(key);
         if (value == null)
             stringSettings.remove(key);
         stringSettings.put(key, value);
     }
 
-    public void setSetting(BooleanSettingKey key, Boolean value) {
+    public void set(BooleanSettingKey key, Boolean value) {
         Objects.requireNonNull(key);
         if (value == null)
             booleanSettings.remove(key);
         booleanSettings.put(key, value);
     }
 
-    public boolean get(BooleanSettingKey key, Boolean defaultValue) {
-        return booleanSettings.getOrDefault(key, defaultValue);
+    public boolean get(BooleanSettingKey key) {
+        Boolean b = booleanSettings.get(key);
+        if (b == null)
+            throw new IllegalArgumentException(getLocalisedString(ExceptionTranslation.NOKEY, key));
+        return b;
     }
 
 
