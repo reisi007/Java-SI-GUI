@@ -1,6 +1,9 @@
 package at.reisisoft.sigui.manager;
 
-import at.reisisoft.sigui.collection.ListHashMap;
+import at.reisisoft.sigui.collection.AbstractCollectionHashMap;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -8,17 +11,80 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Florian on 08.07.2015.
  */
-public class ManagerModel extends ListHashMap<String, Path> {
+public class ManagerModel extends AbstractCollectionHashMap<String, ObservableList<Path>, Path> {
+
+    public ObservableList<KeyValuePair<String, ObservableList<Path>>> getObservableList() {
+        return observableList;
+    }
+
+    private ObservableList<KeyValuePair<String, ObservableList<Path>>> observableList = FXCollections.observableArrayList();
+
+    public ManagerModel() {
+        this(Collections.emptyMap());
+    }
+
+    public ManagerModel(Map<String, ObservableList<Path>> values) {
+        super((s) -> FXCollections.observableArrayList());
+        values.keySet().stream().forEach(key -> {
+            put(key, values.get(key));
+        });
+        observableList.size();
+    }
+
+    private void updateObservableList(String key) {
+        ObservableList<Path> oList = map.get(key);
+        if (oList.size() != 1) return;
+        KeyValuePair<String, ObservableList<Path>> kvp = new KeyValuePair<>(key, oList);
+        observableList.add(kvp);
+        oList.addListener((ListChangeListener<Path>) c -> {
+            observableList.remove(kvp);
+            observableList.add(kvp);
+        });
+    }
 
     @Override
-    public List<Path> remove(Object key) {
+    public boolean put(String key, Path value) {
+        Optional<List<Path>> optional = Optional.of(map.get(key));
+        boolean doit = true;
+        if (optional.isPresent())
+            doit = !optional.get().contains(value);
+        if (doit) {
+            boolean b = super.put(key, value);
+            if (b) updateObservableList(key);
+            return b;
+        } else return true;
+    }
 
-        List<Path> list = super.remove(key);
+    @Override
+    public boolean put(String key, Collection<Path> values) {
+        Optional<List<Path>> optional = Optional.ofNullable(map.get(key));
+        boolean doit = true;
+        if (optional.isPresent()) {
+            List<Path> helper = optional.get();
+            Path[] paths = values.parallelStream().filter(e -> !helper.contains(e)).toArray(Path[]::new);
+            boolean b = true, update = false;
+            for (Path p : paths) {
+                b = b & (update = update | super.put(key, p));
+            }
+            if (update)
+                updateObservableList(key);
+            return b;
+        }
+        boolean b = super.put(key, values);
+        if (b) updateObservableList(key);
+        return b;
+
+    }
+
+    @Override
+    public ObservableList<Path> remove(Object key) {
+
+        ObservableList<Path> list = super.remove(key);
         FileVisitor<Path> fileVisitor = new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {

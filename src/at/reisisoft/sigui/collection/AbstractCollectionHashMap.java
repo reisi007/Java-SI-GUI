@@ -17,7 +17,10 @@ public class AbstractCollectionHashMap<K, C extends Collection<V>, V> implements
 
     public AbstractCollectionHashMap(Function<K, C> createCollectionFunction, Map<K, C> values) {
         this(createCollectionFunction);
-        map.entrySet().stream().forEach(kvp -> put(kvp.getKey(), kvp.getValue()));
+        if (map != null)
+            for (K key : values.keySet()) {
+                put(key, values.get(key));
+            }
     }
 
 
@@ -52,7 +55,7 @@ public class AbstractCollectionHashMap<K, C extends Collection<V>, V> implements
     }
 
     @Override
-    public Map<K, C> toCollection() {
+    public Map<K, C> toMap() {
         return Collections.unmodifiableMap(map);
     }
 

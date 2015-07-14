@@ -6,6 +6,7 @@ import at.reisisoft.sigui.l10n.ExceptionTranslation;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.l10n.TranslationKey;
 import com.thoughtworks.xstream.XStream;
+import javafx.collections.ObservableList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
@@ -52,6 +53,15 @@ public class SiGuiSettings implements Serializable {
 
     private Map<StringSettingKey, String> stringSettings = new EnumMap<>(StringSettingKey.class);
     private Map<BooleanSettingKey, Boolean> booleanSettings = new EnumMap<>(BooleanSettingKey.class);
+    private Map<String, ObservableList<Path>> managerEntries;
+
+    public Map<String, ObservableList<Path>> getManagerEntries() {
+        return managerEntries;
+    }
+
+    public void setManagerEntries(Map<String, ObservableList<Path>> managerEntries) {
+        this.managerEntries = managerEntries;
+    }
 
     public Map<DownloadType, DownloadInfo.DownloadLocation> getSelectedDownloadLocations() {
         return selectedDownloadLocations;
@@ -85,6 +95,7 @@ public class SiGuiSettings implements Serializable {
         set(BooleanSettingKey.CB_SDK_TICKED, false);
         set(BooleanSettingKey.CB_LANGPACK_TICKED, false);
         set(StringSettingKey.DOWNLOADFOLDER, com.google.common.io.Files.createTempDir().toString());
+        managerEntries = Collections.emptyMap();
     }
 
     public Optional<String> get(StringSettingKey key) {

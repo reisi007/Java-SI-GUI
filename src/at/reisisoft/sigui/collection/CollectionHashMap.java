@@ -41,7 +41,7 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
             }
 
             @Override
-            public Map<K, C> toCollection() {
+            public Map<K, C> toMap() {
                 return Collections.emptyMap();
             }
 
@@ -100,7 +100,7 @@ public interface CollectionHashMap<K, C extends Collection<V>, V> {
 
     int size();
 
-    Map<K, C> toCollection();
+    Map<K, C> toMap();
 
     class KeyValuePair<K, V> implements Serializable {
         private K key;
