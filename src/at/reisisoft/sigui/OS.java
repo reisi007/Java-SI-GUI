@@ -87,6 +87,17 @@ public enum OS {
         return new OS[0];
     }
 
+    public String getLinuxPackagingSystem() {
+        switch (this) {
+            case LinuxDeb:
+                return "deb";
+            case LinuxRPM:
+                return "rpm";
+            default:
+                return null;
+        }
+    }
+
     public static boolean isWindowsVM() {
         return getOSName().startsWith("wind");
     }

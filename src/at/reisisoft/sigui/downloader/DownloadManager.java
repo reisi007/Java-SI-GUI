@@ -101,7 +101,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
     private String getRegex4Main(DownloadInfo.DownloadLocation base) {
         if (base.getDownloadType() == DownloadType.Daily)
-            return base.getVersionPrefix() + ".+?" + base.getOs().getOSShortName() + "_" + base.getA().getInFilenameArchitecture().toLowerCase() + "_[^h].+?[^sdk]\\." + base.getOs().getFileExtension() + '"';
+            return base.getVersionPrefix() + ".+?" + base.getOs().getOSShortName() + "_" + base.getA().getInFilenameArchitecture().toLowerCase() + (base.getOs().isLinux() ? '_' + base.getOs().getLinuxPackagingSystem() : "_[^h].+?[^s]\\.") + base.getOs().getFileExtension() + '"';
         return "Lib(O_|re).+?" + base.getA().getInFilenameArchitecture().toLowerCase() + ("exe".equalsIgnoreCase(base.getOs().getFileExtension()) ? ".+?install_multi.exe\"" : "\\." + base.getOs().getFileExtension() + "[^\\.asc]");
     }
 
