@@ -2,7 +2,6 @@ package at.reisisoft.sigui.installation;
 
 import at.reisisoft.sigui.OS;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -18,10 +17,11 @@ public class WinExeInstallationTqElement extends AbstractInstallationTqElement {
     }
 
     private InstallationProvider getInstallationProvider() {
-        return new AbstractInstallationProvider() {
+        return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws IOException {
+            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
                 //TODO
+
             }
         };
     }

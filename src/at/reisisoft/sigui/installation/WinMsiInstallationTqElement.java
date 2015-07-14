@@ -2,7 +2,6 @@ package at.reisisoft.sigui.installation;
 
 import at.reisisoft.sigui.OS;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -18,10 +17,17 @@ public class WinMsiInstallationTqElement extends AbstractInstallationTqElement {
     }
 
     private InstallationProvider getInstallationProvider() {
-        return new AbstractInstallationProvider() {
+        return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws IOException {
-                //TODO
+            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
+                String base = "msiexec /qr /norestart /a \"%s\" TARGETDIR =\"%s\"";
+                String finalStartString = String.format(base, installer, installationFolder);
+                System.out.println("Installing with cmd \"" + finalStartString + '"');
+                try {
+                    Runtime.getRuntime().exec(finalStartString).waitFor();
+                } catch (Exception e) {
+                    throw new InstallatioException(e);
+                }
             }
         };
     }

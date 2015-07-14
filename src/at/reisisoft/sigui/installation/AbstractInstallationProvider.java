@@ -9,9 +9,14 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractInstallationProvider implements InstallationProvider {
     private Consumer<Path> consumer = null;
+    protected final AbstractInstallationTqElement tqElement;
+
+    public AbstractInstallationProvider(AbstractInstallationTqElement tqElement) {
+        this.tqElement = tqElement;
+    }
 
     @Override
-    public final void install(Path installer, Path installationFolder) throws IOException {
+    public final void install(Path installer, Path installationFolder) throws InstallatioException {
         doInstallation(installer, installationFolder);
         if (consumer != null)
             consumer.accept(installationFolder);
@@ -25,5 +30,5 @@ public abstract class AbstractInstallationProvider implements InstallationProvid
         consumer = after;
     }
 
-    public abstract void doInstallation(Path installer, Path installationFolder) throws IOException;
+    public abstract void doInstallation(Path installer, Path installationFolder) throws InstallatioException;
 }

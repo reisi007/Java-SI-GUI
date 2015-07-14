@@ -18,9 +18,9 @@ public class MacInstallationTqElement extends AbstractInstallationTqElement {
     }
 
     private InstallationProvider getInstallationProvider() {
-        return new AbstractInstallationProvider() {
+        return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws IOException {
+            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
                 //TODO
             }
         };
