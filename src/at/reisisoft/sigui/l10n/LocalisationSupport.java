@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
  */
 public class LocalisationSupport {
 
+    public static final Locale[] AVAILABLE_LOCALS = {Locale.ENGLISH, Locale.GERMAN};
+
     private static LocalisationSupport _instance = null;
 
     public static LocalisationSupport getInstance() {

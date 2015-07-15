@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: at.reisisoft.sigui.Main
+Main-Class: at.reisisoft.sigui.ui.main.MainUi
 
