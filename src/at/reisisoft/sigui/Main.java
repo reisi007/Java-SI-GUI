@@ -79,9 +79,9 @@ public class Main {
             DownloadInfo.DownloadLocation location = locations[choice - 1];
             Optional<DownloadManager.Entry> fileMain = null, fileHelp = null, fileSdk = null;
             Collection<Optional<DownloadManager.Entry>> dlCollection = new ArrayList<>();
-            if (main) dlCollection.add(downloadManager.getDownloadFileMain(location));
-            if (help) dlCollection.add(downloadManager.getDownloadFileHelp(location, helpLang));
-            if (sdk) dlCollection.add(downloadManager.getDownloadFileSdk(location));
+            if (main) dlCollection.add(DownloafHelper.getDownloadFileMain(location));
+            if (help) dlCollection.add(DownloafHelper.getDownloadFileHelp(location, helpLang));
+            if (sdk) dlCollection.add(DownloafHelper.getDownloadFileSdk(location));
             Path f = getTmpFolder();
             System.out.format("Download will be started to %s%n", f);
             DownloadManager.Entry[] array = dlCollection.stream().filter(Optional::isPresent).map(Optional::get).map(entry -> {

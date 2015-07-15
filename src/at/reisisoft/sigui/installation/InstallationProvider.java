@@ -10,6 +10,4 @@ public interface InstallationProvider {
 
     void install(Path installer, Path installationFolder) throws InstallatioException;
 
-
-    void andAfter(Consumer<Path> after);
 }

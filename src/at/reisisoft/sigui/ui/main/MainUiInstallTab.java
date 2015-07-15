@@ -7,6 +7,7 @@ import at.reisisoft.sigui.installation.InstallationProviders;
 import at.reisisoft.sigui.l10n.ExceptionTranslation;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
+import at.reisisoft.sigui.ui.AdditionalFunctions;
 import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
 import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
@@ -21,10 +22,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -37,6 +37,13 @@ public class MainUiInstallTab extends Tab {
     private final List<MainUiTranslation> allowed = OS.isWindowsVM() ? Arrays.asList(MainUiTranslation.INSTALLER_MAIN, MainUiTranslation.INSTALLER_HELP, MainUiTranslation.INSTALLER_SDK) : Arrays.asList(MainUiTranslation.INSTALLER_MAIN, MainUiTranslation.INSTALLER_HELP, MainUiTranslation.INSTALLER_LANGPACK, MainUiTranslation.INSTALLER_SDK);
     private final ProgressIndicator progressIndicator = new ProgressIndicator();
     private final Button startInstallation;
+    private Map<MainUiTranslation, TextField> map = new EnumMap<>(MainUiTranslation.class);
+
+    public void updatePath(String path, MainUiTranslation type) {
+        TextField tf = map.get(type);
+        tf.setText(path);
+        tf.getOnAction().handle(null);
+    }
 
     public static MainUiInstallTab getInstance(LocalisationSupport localisationSupport, Window window) {
         if (instance == null) {
@@ -64,7 +71,7 @@ public class MainUiInstallTab extends Tab {
         progressIndicator.setProgress(0);
         progressIndicator.setMinSize(75, 75);
         int max = allowed.size();
-        //Start installation onclick listener TODO Add functionality
+        //Start installation onclick listener
         startInstallation.setOnAction(event -> {
             startInstallation.setDisable(true);
             Runnable r = () -> {
@@ -74,7 +81,10 @@ public class MainUiInstallTab extends Tab {
                     optional.ifPresent(installationProvider -> {
                         MainUi.listeningExecutorService.submit(() -> {
                             try {
-                                installationProvider.install(new File(kvp.getKey()).toPath(),/*TODO ADD INSTALLOCATION HERE*/null);
+                                String filename = Paths.get(kvp.getKey()).getFileName().toString();
+                                Path installLocation = getInstallLocation(settings, filename);
+                                installationProvider.install(Paths.get(kvp.getKey()), installLocation);
+                                AdditionalFunctions.addToManager(localisationSupport, window).accept(new CollectionHashMap.KeyValuePair<>(filename, installLocation));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -85,6 +95,15 @@ public class MainUiInstallTab extends Tab {
             };
             new Thread(r).start();
         });
+    }
+
+    private Path getInstallLocation(SiGuiSettings settings, String name) throws IllegalStateException {
+        String path = settings.get(SiGuiSettings.StringSettingKey.INSTALL_PATH).orElseThrow(() -> new IllegalStateException(localisationSupport.getString(ExceptionTranslation.ADDITIONALINFONEEDED, localisationSupport.getString(MainUiSettingsTabTranslation.INSTALLPATH))));
+        boolean shouldUseSubfolder = settings.get(SiGuiSettings.BooleanSettingKey.INSTALL_SUBFOLDER);
+        if (shouldUseSubfolder)
+            return Paths.get(path, name);
+        return Paths.get(path);
+
     }
 
 
@@ -100,6 +119,7 @@ public class MainUiInstallTab extends Tab {
             throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, MainUiTranslation.class + " 'kind'"));
         HBox hBox = new HBox(8);
         final TextField textField = new TextField();
+        map.put(kind, textField);
         textField.setEditable(false);
         textField.setText(settings.get(getStringSettingsKeyFrom(kind)).orElse(""));
         String buttonText = localisationSupport.getString(MainUiTranslation.OPEN, localisationSupport.getString(kind));

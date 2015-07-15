@@ -126,20 +126,16 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
         langPack.setSelected(settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED));
         //Set checked change listener
         main.setOnAction(event -> {
-            boolean newVal = !settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED);
-            settings.set(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED, newVal);
+            settings.set(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED, main.isSelected());
         });
         sdk.setOnAction(event -> {
-            boolean newVal = !settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED);
-            settings.set(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED, newVal);
+            settings.set(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED, sdk.isSelected());
         });
         hp.setOnAction(event -> {
-            boolean newVal = !settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED);
-            settings.set(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED, newVal);
+            settings.set(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED, hp.isSelected());
         });
         langPack.setOnAction(event -> {
-            boolean newVal = !settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED);
-            settings.set(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED, newVal);
+            settings.set(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED, langPack.isSelected());
         });
 
         secondRow.getChildren().addAll(main, hp);
@@ -163,25 +159,43 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                         String lang = languages.selectionModelProperty().get().getSelectedItem();
                         String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElse(Files.createTempDir().toString());
                         List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
+
+                        final ObjectProperty<MainUiTranslation> eventType = new ObjectProperty<>();
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
-                            entries.add(downloadManager.getDownloadFileMain(location));
+                            entries.add(DownloafHelper.getDownloadFileMain(location));
+                            eventType.set(MainUiTranslation.INSTALLER_MAIN);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
-                            entries.add(downloadManager.getDownloadFileHelp(location, lang));
+                            entries.add(DownloafHelper.getDownloadFileHelp(location, lang));
+                            eventType.set(MainUiTranslation.INSTALLER_HELP);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
-                            entries.add(downloadManager.getDownloadFileSdk(location));
+                            entries.add(DownloafHelper.getDownloadFileSdk(location));
+                            eventType.set(MainUiTranslation.INSTALLER_SDK);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
-                            entries.add(downloadManager.getDownloadFileLangPack(location, lang));
+                            entries.add(DownloafHelper.getDownloadFileLangPack(location, lang));
+                            eventType.set(MainUiTranslation.INSTALLER_LANGPACK);
                         }
                         entries.stream().filter(Optional::isPresent).map(Optional::get).map(e -> {
                             e.setTo(Paths.get(dlPath, e.getFilename()));
                             return e;
-                        }).map(downloadManager::submit).forEach(lf -> lf.addListener(() -> {
-                            if (!downloadManager.getTotalDownloadProgress().hasStarted())
-                                Platform.runLater(() -> progressBar.progressProperty().set(0d));
-                        }, MoreExecutors.sameThreadExecutor()));
+                        }).map(downloadManager::submit).forEach(lf -> {
+                            lf.addListener(() -> {
+                                if (!downloadManager.getTotalDownloadProgress().hasStarted())
+                                    Platform.runLater(() -> progressBar.progressProperty().set(0d));
+                            }, MoreExecutors.sameThreadExecutor());
+                            lf.addListener(() -> {
+                                try {
+                                    Optional<DownloadManager.Entry> text = lf.get();
+                                    text.ifPresent(entry -> entry.getTo().ifPresent(path -> {
+                                        MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), eventType.get());
+                                    }));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }, MoreExecutors.sameThreadExecutor());
+                        });
 
                     });
                 };

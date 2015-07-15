@@ -49,7 +49,7 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
 
     @Override
     public boolean put(String key, Path value) {
-        Optional<List<Path>> optional = Optional.of(map.get(key));
+        Optional<List<Path>> optional = Optional.ofNullable(map.get(key));
         boolean doit = true;
         if (optional.isPresent())
             doit = !optional.get().contains(value);

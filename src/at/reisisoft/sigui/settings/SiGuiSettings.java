@@ -47,9 +47,9 @@ public class SiGuiSettings implements Serializable {
         return _xstream;
     }
 
-    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER, DL_LANGUAGE, PATH_MAIN, PATH_SDK, PATH_HP, PATH_LANGPACK, INSTALL_PATH_LAST_FILEOPENED}
+    public enum StringSettingKey {DOWNLOADFOLDER, SHORTCUTFOLDER, DL_LANGUAGE, PATH_MAIN, PATH_SDK, PATH_HP, PATH_LANGPACK, INSTALL_PATH, INSTALL_PATH_LAST_FILEOPENED}
 
-    public enum BooleanSettingKey {RENAME_FILES, CB_MAIN_TICKED, CB_HELP_TICKED, CB_SDK_TICKED, CB_LANGPACK_TICKED}
+    public enum BooleanSettingKey {RENAME_FILES, CB_MAIN_TICKED, CB_HELP_TICKED, CB_SDK_TICKED, CB_LANGPACK_TICKED, INSTALL_SUBFOLDER, EDIT_BOOTSTRAP}
 
     private Map<StringSettingKey, String> stringSettings = new EnumMap<>(StringSettingKey.class);
     private Map<BooleanSettingKey, Boolean> booleanSettings = new EnumMap<>(BooleanSettingKey.class);
@@ -96,6 +96,7 @@ public class SiGuiSettings implements Serializable {
         set(BooleanSettingKey.CB_LANGPACK_TICKED, false);
         set(StringSettingKey.DOWNLOADFOLDER, com.google.common.io.Files.createTempDir().toString());
         set(BooleanSettingKey.RENAME_FILES, true);
+        set(BooleanSettingKey.INSTALL_SUBFOLDER, true);
         managerEntries = Collections.emptyMap();
     }
 
@@ -177,6 +178,7 @@ public class SiGuiSettings implements Serializable {
 
     public static void save(SiGuiSettings settings, Path p, LocalisationSupport localisationSupport) throws IOException {
         Objects.requireNonNull(settings, "settings");
+        if (!Files.exists(p)) Files.createFile(p);
         System.out.println("Saving Settings to: " + p);
         getXStream().toXML(settings, Files.newBufferedWriter(p, StandardCharsets.UTF_8));
     }

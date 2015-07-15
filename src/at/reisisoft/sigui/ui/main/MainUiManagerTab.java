@@ -1,10 +1,12 @@
 package at.reisisoft.sigui.ui.main;
 
+import at.reisisoft.sigui.OS;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.manager.ManagerModel;
 import at.reisisoft.sigui.manager.ManagerUtil;
 import at.reisisoft.sigui.settings.SiGuiSettings;
+import at.reisisoft.sigui.ui.AdditionalFunctions;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -16,8 +18,10 @@ import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,6 +44,10 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
     }
 
     private final LocalisationSupport localisationSupport;
+
+    public ManagerModel getModel() {
+        return model;
+    }
 
     private MainUiManagerTab(LocalisationSupport localisationSupport, Window window) {
         super(localisationSupport.getString(MainUITab.MANAGER));
@@ -65,18 +73,31 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
         key.prefWidthProperty().bind(tableView.widthProperty().divide(5));
         value.prefWidthProperty().bind(tableView.widthProperty().multiply(4d / 5).subtract(20));
         tableView.getColumns().addAll(key, value);
+        //Context menu for create shortcut
+        MenuItem createShortCut = new MenuItem(localisationSupport.getString(MainUiTranslation.SHORTCUT_CREATE));
+        createShortCut.setOnAction(event -> {
+            CollectionHashMap.KeyValuePair<String, ObservableList<Path>> selectedItem = tableView.getSelectionModel().getSelectedItem();
+            Path val = getSofficePath(selectedItem.getValue(), settings.getOSs().get(0));
+            AdditionalFunctions.createShortCut(settings).accept(new CollectionHashMap.KeyValuePair<>(selectedItem.getKey(), getSofficePath(selectedItem.getValue(), settings.getOSs().get(0))));
+        });
+        MenuItem deleteCur = new MenuItem(localisationSupport.getString(MainUiTranslation.MANAGER_DELETE));
+        deleteCur.setOnAction(event1 -> model.remove(tableView.getSelectionModel().getSelectedItem().getKey()));
+        tableView.setContextMenu(new ContextMenu(createShortCut, deleteCur));
+
 
         //Button
         searchFor.setOnAction(event -> {
             Optional<File> optional = chooseFolder();
             optional.ifPresent(f -> {
                 progressIndicator.setVisible(true);
+                searchFor.setDisable(true);
                 Runnable r = () -> {
                     try {
                         Collection<CollectionHashMap.KeyValuePair<String, Path>> collection = ManagerUtil.scanForsoffice(f.toPath());
                         Platform.runLater(() -> {
                             model.put(collection);
                             progressIndicator.setVisible(false);
+                            searchFor.setDisable(false);
                         });
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -88,6 +109,16 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
         });
 
 
+    }
+
+    private Path getSofficePath(List<Path> list, OS os) {
+        String soffice = "soffice." + os.getExecutingExtension();
+        for (Path p : list) {
+            Path sofficePath = p.resolve("program").resolve(soffice);
+            if (Files.exists(sofficePath))
+                return sofficePath;
+        }
+        return list.get(0);
     }
 
     @Override

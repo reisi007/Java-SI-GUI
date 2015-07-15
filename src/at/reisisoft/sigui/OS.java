@@ -98,6 +98,14 @@ public enum OS {
         }
     }
 
+    public String getExecutingExtension() {
+        if (isWindows())
+            return "exe";
+        if (isLinux())
+            return "sh";
+        return getFileExtension();
+    }
+
     public static boolean isWindowsVM() {
         return getOSName().startsWith("wind");
     }
