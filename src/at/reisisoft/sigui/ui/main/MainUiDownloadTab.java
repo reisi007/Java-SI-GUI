@@ -182,14 +182,12 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                             return e;
                         }).map(downloadManager::submit).forEach(lf -> {
                             lf.addListener(() -> {
-                                if (!downloadManager.getTotalDownloadProgress().hasStarted())
-                                    Platform.runLater(() -> progressBar.progressProperty().set(0d));
-                            }, MoreExecutors.sameThreadExecutor());
-                            lf.addListener(() -> {
                                 try {
                                     Optional<DownloadManager.Entry> text = lf.get();
                                     text.ifPresent(entry -> entry.getTo().ifPresent(path -> {
-                                        MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), eventType.get());
+                                        MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), eventType.get(), settings);
+                                        if (!downloadManager.getTotalDownloadProgress().hasStarted())
+                                            Platform.runLater(() -> progressBar.progressProperty().set(0d));
                                     }));
                                 } catch (Exception e) {
                                     e.printStackTrace();

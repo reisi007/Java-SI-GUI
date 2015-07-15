@@ -1,5 +1,7 @@
 package at.reisisoft.sigui.ui.main;
 
+import at.reisisoft.sigui.Architecture;
+import at.reisisoft.sigui.OS;
 import at.reisisoft.sigui.l10n.ExceptionTranslation;
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.l10n.TranslationKey;
@@ -7,6 +9,8 @@ import at.reisisoft.sigui.settings.SiGuiSettings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -15,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
 import java.util.*;
@@ -30,7 +35,7 @@ public class MainUiSettingsTab extends Tab {
     private static MainUiSettingsTab instance = null;
     private Map<SiGuiSettings.StringSettingKey, TextField> stringSettingsMap = new EnumMap<>(StringSettingKey.class);
     private Map<SiGuiSettings.BooleanSettingKey, CheckBox> booleanSettingsMap = new EnumMap<>(BooleanSettingKey.class);
-    private final Window window;
+    private Window window;
 
     public static MainUiSettingsTab getInstance(LocalisationSupport localisationSupport, Window window) {
         if (instance == null) {
@@ -115,8 +120,39 @@ public class MainUiSettingsTab extends Tab {
                 settings.setUserLanguage(newValue);
             }
         });
+
         Label l10Label = new Label(localisationSupport.getString(MainUiSettingsTabTranslation.L10LABLE));
         mainContent.getChildren().add(new HBox(8, l10Label, l10n));
+        Label arch = new Label(localisationSupport.getString(MainUiSettingsTabTranslation.ARCH)), os = new Label(localisationSupport.getString(MainUiSettingsTabTranslation.OS));
+        CheckComboBox<Architecture> archBox = new CheckComboBox<>(FXCollections.observableArrayList(Architecture.values()));
+        CheckComboBox<OS> osBox = new CheckComboBox<>(FXCollections.observableArrayList(OS.detect()));
+        osBox.setConverter(new StringConverter<OS>() {
+            Map<String, OS> map = new HashMap<>();
+
+            @Override
+            public String toString(OS object) {
+                String e = object.getOSShortName() + " - " + object.getFileExtension().toUpperCase();
+                map.put(e, object);
+                return e;
+            }
+
+            @Override
+            public OS fromString(String string) {
+                return map.get(string);
+            }
+        });
+        ObservableList<Architecture> obsArch = archBox.getCheckModel().getCheckedItems();
+        ObservableList<OS> obsOS = osBox.getCheckModel().getCheckedItems();
+
+        mainContent.getChildren().addAll(new HBox(8, arch, archBox), new HBox(8, os, osBox));
+
+        obsOS.addListener((ListChangeListener<OS>) c -> {
+            settings.setOSs(new ArrayList<>(obsOS));
+        });
+        obsArch.addListener((ListChangeListener<Architecture>) c -> {
+            settings.setArchitectures(new ArrayList<>(obsArch));
+        });
+
     }
 
     private TranslationKey getKeyFrom(StringSettingKey key) {

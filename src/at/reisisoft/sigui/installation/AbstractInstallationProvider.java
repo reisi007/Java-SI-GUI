@@ -13,9 +13,9 @@ public abstract class AbstractInstallationProvider implements InstallationProvid
     }
 
     @Override
-    public final void install(Path installer, Path installationFolder) throws InstallatioException {
-        doInstallation(installer, installationFolder);
+    public final boolean install(Path installer, Path installationFolder) throws InstallatioException {
+        return doInstallation(installer, installationFolder);
     }
 
-    public abstract void doInstallation(Path installer, Path installationFolder) throws InstallatioException;
+    public abstract boolean doInstallation(Path installer, Path installationFolder) throws InstallatioException;
 }

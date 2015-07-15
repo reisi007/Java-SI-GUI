@@ -20,6 +20,8 @@ public class MainUiTabProvider {
                 return MainUiManagerTab.getInstance(localisationSupport, window);
             case SETTINGS:
                 return MainUiSettingsTab.getInstance(localisationSupport, window);
+            case CREDITS:
+                return MainUiCreditsTab.getInstance(localisationSupport, window);
             default:
                 throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, localisationSupport.getString(MainUiTranslation.TAB)));
         }

@@ -2,7 +2,6 @@ package at.reisisoft.sigui.installation;
 
 import at.reisisoft.sigui.OS;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -20,8 +19,8 @@ public class LinuxRpmInstallationTqElement extends AbstractInstallationTqElement
     private InstallationProvider getInstallationProvider() {
         return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
-                //TODO
+            public boolean doInstallation(Path installer, Path installationFolder) throws InstallatioException {
+                return false;   //TODO
             }
         };
     }

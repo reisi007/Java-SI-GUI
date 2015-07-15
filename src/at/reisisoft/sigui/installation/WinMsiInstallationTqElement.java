@@ -19,12 +19,15 @@ public class WinMsiInstallationTqElement extends AbstractInstallationTqElement {
     private InstallationProvider getInstallationProvider() {
         return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
-                String base = "msiexec /qr /norestart /a \"%s\" TARGETDIR =\"%s\"";
+            public boolean doInstallation(Path installer, Path installationFolder) throws InstallatioException {
+                String base = "\"%s\"";
                 String finalStartString = String.format(base, installer, installationFolder);
-                System.out.println("Installing with cmd \"" + finalStartString + '"');
                 try {
-                    Runtime.getRuntime().exec(finalStartString).waitFor();
+                    ProcessBuilder pb = new ProcessBuilder("msiexec", "/qr", "/a", String.format(base, installer), "TARGETDIR=" + String.format(base, installationFolder));
+                    Process p = pb.start();
+                    p.waitFor();
+                    int exitValue = p.exitValue();
+                    return exitValue == 0;
                 } catch (Exception e) {
                     throw new InstallatioException(e);
                 }

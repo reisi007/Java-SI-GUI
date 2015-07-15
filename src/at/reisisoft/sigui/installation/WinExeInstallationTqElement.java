@@ -19,8 +19,8 @@ public class WinExeInstallationTqElement extends AbstractInstallationTqElement {
     private InstallationProvider getInstallationProvider() {
         return new AbstractInstallationProvider(this) {
             @Override
-            public void doInstallation(Path installer, Path installationFolder) throws InstallatioException {
-                //TODO
+            public boolean doInstallation(Path installer, Path installationFolder) throws InstallatioException {
+                return false;  //TODO
 
             }
         };

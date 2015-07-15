@@ -39,10 +39,10 @@ public class MainUiInstallTab extends Tab {
     private final Button startInstallation;
     private Map<MainUiTranslation, TextField> map = new EnumMap<>(MainUiTranslation.class);
 
-    public void updatePath(String path, MainUiTranslation type) {
+    public void updatePath(String path, MainUiTranslation type, SiGuiSettings settings) {
         TextField tf = map.get(type);
         tf.setText(path);
-        tf.getOnAction().handle(null);
+        settings.set(getStringSettingsKeyFrom(type), path);
     }
 
     public static MainUiInstallTab getInstance(LocalisationSupport localisationSupport, Window window) {
@@ -82,6 +82,7 @@ public class MainUiInstallTab extends Tab {
                         MainUi.listeningExecutorService.submit(() -> {
                             try {
                                 String filename = Paths.get(kvp.getKey()).getFileName().toString();
+                                filename = filename.substring(0, filename.lastIndexOf('.'));
                                 Path installLocation = getInstallLocation(settings, filename);
                                 installationProvider.install(Paths.get(kvp.getKey()), installLocation);
                                 AdditionalFunctions.addToManager(localisationSupport, window).accept(new CollectionHashMap.KeyValuePair<>(filename, installLocation));
