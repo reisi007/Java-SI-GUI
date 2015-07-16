@@ -7,12 +7,13 @@ import at.reisisoft.sigui.settings.SiGuiSettings;
 import at.reisisoft.sigui.shortcut.ShortcutProviders;
 import at.reisisoft.sigui.ui.main.MainUi;
 import at.reisisoft.sigui.ui.main.MainUiManagerTab;
+import javafx.application.Platform;
 import javafx.stage.Window;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,7 +48,8 @@ public class AdditionalFunctions {
         return path -> {
             Path p = path.resolve("program");
             try {
-                Optional<String> opt = Files.list(p).map(Path::toFile).map(File::getName).filter(s -> s.startsWith("boot")).findAny();
+                Optional<String> opt = Files.list(p).map(Path::toFile).map(File::getName).filter(s
+                        -> s.startsWith("boot")).findAny();
                 if (!opt.isPresent())
                     throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, "bootstrap"));
                 p = p.resolve(opt.get());
@@ -60,13 +62,11 @@ public class AdditionalFunctions {
                         else stringBuilder.append(line).append('\n');
                     }
                 }
-                try (BufferedWriter writer = Files.newBufferedWriter(p)) {
-                    writer.write(stringBuilder.toString());
-                }
+                com.google.common.io.Files.write(stringBuilder.toString(), p.toFile(), StandardCharsets.UTF_8);
 
 
             } catch (Exception e) {
-                MainUi.handleException(e);
+                Platform.runLater(() -> MainUi.handleException(e));
             }
         };
     }

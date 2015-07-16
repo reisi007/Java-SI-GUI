@@ -1,7 +1,5 @@
 package at.reisisoft.sigui.downloader;
 
-import at.reisisoft.sigui.DownloadInfo;
-import at.reisisoft.sigui.DownloadType;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -16,8 +14,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.function.ToLongFunction;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Florian on 25.06.2015.
@@ -62,8 +58,6 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
             }
         };
     }
-
-
 
 
     @Override
@@ -126,7 +120,6 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
         private Map<Entry, DownloadProgressInfo> progressInfoMap = Collections.synchronizedMap(new HashMap<>());
         private Map<Entry, ListenableFuture<?>> listenableFutureMap = Collections.synchronizedMap(new HashMap<>());
         private long total = 0, downloaded = 0;
-        private boolean hasStarted = false;
         private List<DownloadProgressListener> downloadProgressListeners = new ArrayList<>();
 
         public void addDownloadProgressListener(DownloadProgressListener listener) {
@@ -146,7 +139,6 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
         public DownloadProgressListener getDownloadProgressListener(Entry entry) {
             return DownloadProgressListener.onlyReactEvery512KB(d -> {
-                hasStarted = true;
                 DownloadProgressInfo progressInfo = progressInfoMap.put(entry, d);
                 if (progressInfo == null) {
                     updateTotal();
@@ -188,14 +180,7 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
 
         @Override
         public boolean hasStarted() {
-            return hasStarted;
-        }
-
-        @Override
-        public void resetHasStarted() throws IllegalStateException {
-            if (progressInfoMap.size() != 0 || listenableFutureMap.size() != 0)
-                throw new IllegalStateException("You have to cancel all downloads / let all download finish prior to resetting!");
-            hasStarted = false;
+            return progressInfoMap.size() != 0;
         }
 
 
@@ -215,7 +200,6 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
                 lf.cancel(true);
             progressInfoMap.clear();
             listenableFutureMap.clear();
-            hasStarted = false;
         }
 
         @Override
@@ -224,7 +208,6 @@ public class DownloadManager implements AutoCloseable, PartiallyCancelable<Downl
             ListenableFuture<?> lf = listenableFutureMap.remove(toCancel);
             if (lf != null)
                 lf.cancel(true);
-            hasStarted = progressInfoMap.size() > 0;
         }
     }
 }

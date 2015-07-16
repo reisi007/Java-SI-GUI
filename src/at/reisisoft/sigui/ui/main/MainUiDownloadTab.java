@@ -11,7 +11,6 @@ import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
 import at.reisisoft.sigui.ui.controls.DownloadAccordion;
 import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -161,20 +160,33 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                         List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
 
                         final ObjectProperty<MainUiTranslation> eventType = new ObjectProperty<>();
+
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
-                            entries.add(DownloafHelper.getDownloadFileMain(location));
+                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileMain(location);
+                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                e.ifPresent(en -> en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            entries.add(e);
                             eventType.set(MainUiTranslation.INSTALLER_MAIN);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
-                            entries.add(DownloafHelper.getDownloadFileHelp(location, lang));
+                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileHelp(location, lang);
+                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                e.ifPresent(en -> en.setFilename("libo_help" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            entries.add(e);
                             eventType.set(MainUiTranslation.INSTALLER_HELP);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
-                            entries.add(DownloafHelper.getDownloadFileSdk(location));
+                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileSdk(location);
+                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                e.ifPresent(en -> en.setFilename("libo_sdk" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            entries.add(e);
                             eventType.set(MainUiTranslation.INSTALLER_SDK);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
-                            entries.add(DownloafHelper.getDownloadFileLangPack(location, lang));
+                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileLangPack(location, lang);
+                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                e.ifPresent(en -> en.setFilename("libo_langpack" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            entries.add(e);
                             eventType.set(MainUiTranslation.INSTALLER_LANGPACK);
                         }
                         entries.stream().filter(Optional::isPresent).map(Optional::get).map(e -> {
@@ -185,14 +197,16 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                                 try {
                                     Optional<DownloadManager.Entry> text = lf.get();
                                     text.ifPresent(entry -> entry.getTo().ifPresent(path -> {
-                                        MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), eventType.get(), settings);
-                                        if (!downloadManager.getTotalDownloadProgress().hasStarted())
-                                            Platform.runLater(() -> progressBar.progressProperty().set(0d));
+                                        eventType.get().ifPresent(e -> {
+                                            MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), e, settings);
+                                            if (!downloadManager.getTotalDownloadProgress().hasStarted())
+                                                Platform.runLater(() -> progressBar.progressProperty().set(0d));
+                                        });
                                     }));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }, MoreExecutors.sameThreadExecutor());
+                            }, MainUi.listeningExecutorService);
                         });
 
                     });

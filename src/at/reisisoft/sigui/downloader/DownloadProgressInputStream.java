@@ -80,18 +80,6 @@ public class DownloadProgressInputStream extends FilterInputStream implements Do
         return started;
     }
 
-    @Override
-    public void resetHasStarted() throws IllegalStateException {
-        try {
-            if (in.available() > 0)
-                throw new IllegalStateException("Bytes available, cannot reset started status now!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalStateException("An IO exception occured!");
-        }
-        started = false;
-    }
-
 
     public long getTotalSizeInBytes() {
         return totalSizeInBytes;

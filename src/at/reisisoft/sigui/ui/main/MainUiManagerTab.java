@@ -7,6 +7,7 @@ import at.reisisoft.sigui.manager.ManagerModel;
 import at.reisisoft.sigui.manager.ManagerUtil;
 import at.reisisoft.sigui.settings.SiGuiSettings;
 import at.reisisoft.sigui.ui.AdditionalFunctions;
+import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -58,17 +59,17 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
         setContent(mainContent);
 
         Button searchFor = new Button(localisationSupport.getString(MainUiTranslation.FINDINSTALLATIONS));
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setVisible(false);
-
+        ProgressIndicator searchProgressIndicator = new ProgressIndicator(), deleteProgressIndicator = new ProgressIndicator();
+        searchProgressIndicator.setVisible(false);
+        deleteProgressIndicator.setVisible(false);
         model = new ManagerModel(settings.getManagerEntries());
         tableView = new TableView<>(model.getObservableList());
-        mainContent.getChildren().addAll(tableView, new HBox(8, searchFor, progressIndicator));
+        mainContent.getChildren().addAll(tableView, new HBox(8, searchFor, searchProgressIndicator));
 
-        //Create Table TODO l10n
-        TableColumn<CollectionHashMap.KeyValuePair<String, ObservableList<Path>>, String> key = new TableColumn<>("Key");
+        //Create Table
+        TableColumn<CollectionHashMap.KeyValuePair<String, ObservableList<Path>>, String> key = new TableColumn<>(localisationSupport.getString(MainUiTranslation.MANAGER_TABLE_KEY));
         key.setCellValueFactory(new PropertyValueFactory<>("key"));
-        TableColumn<CollectionHashMap.KeyValuePair<String, ObservableList<Path>>, String> value = new TableColumn<>("Value");
+        TableColumn<CollectionHashMap.KeyValuePair<String, ObservableList<Path>>, String> value = new TableColumn<>(localisationSupport.getString(MainUiTranslation.MANAGER_TABLE_VALUE));
         value.setCellValueFactory(new PropertyValueFactory<>("value"));
         key.prefWidthProperty().bind(tableView.widthProperty().divide(5));
         value.prefWidthProperty().bind(tableView.widthProperty().multiply(4d / 5).subtract(20));
@@ -81,7 +82,12 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
             AdditionalFunctions.createShortCut(settings).accept(new CollectionHashMap.KeyValuePair<>(selectedItem.getKey(), getSofficePath(selectedItem.getValue(), settings.getOSs().get(0))));
         });
         MenuItem deleteCur = new MenuItem(localisationSupport.getString(MainUiTranslation.MANAGER_DELETE));
-        deleteCur.setOnAction(event1 -> model.remove(tableView.getSelectionModel().getSelectedItem().getKey()));
+        deleteCur.setOnAction(event1 -> {
+            deleteProgressIndicator.setVisible(true);
+            MainUi.listeningExecutorService.submit(() -> model.remove(tableView.getSelectionModel().getSelectedItem().getKey())).addListener(() ->
+                    Platform.runLater(() -> deleteProgressIndicator.setVisible(false))
+                    , MoreExecutors.sameThreadExecutor());
+        });
         tableView.setContextMenu(new ContextMenu(createShortCut, deleteCur));
 
 
@@ -89,14 +95,14 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
         searchFor.setOnAction(event -> {
             Optional<File> optional = chooseFolder();
             optional.ifPresent(f -> {
-                progressIndicator.setVisible(true);
+                searchProgressIndicator.setVisible(true);
                 searchFor.setDisable(true);
                 Runnable r = () -> {
                     try {
                         Collection<CollectionHashMap.KeyValuePair<String, Path>> collection = ManagerUtil.scanForsoffice(f.toPath());
                         Platform.runLater(() -> {
                             model.put(collection);
-                            progressIndicator.setVisible(false);
+                            searchProgressIndicator.setVisible(false);
                             searchFor.setDisable(false);
                         });
                     } catch (IOException e) {

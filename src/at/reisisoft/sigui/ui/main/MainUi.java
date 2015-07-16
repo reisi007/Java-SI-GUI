@@ -2,6 +2,7 @@ package at.reisisoft.sigui.ui.main;
 
 import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
+import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Application;
@@ -94,6 +95,7 @@ public class MainUi extends Application {
         }
     }
 
+    @RunsOnJavaFXThread
     public static void handleException(final Throwable e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(e.getClass().getCanonicalName());

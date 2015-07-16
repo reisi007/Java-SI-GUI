@@ -2,9 +2,9 @@ package at.reisisoft.sigui.manager;
 
 import at.reisisoft.sigui.collection.AbstractCollectionHashMap;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -38,13 +38,9 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
 
     private void updateObservableList(String key) {
         ObservableList<Path> oList = map.get(key);
-        if (oList.size() != 1) return;
-        KeyValuePair<String, ObservableList<Path>> kvp = new KeyValuePair<>(key, oList);
-        observableList.add(kvp);
-        oList.addListener((ListChangeListener<Path>) c -> {
-            observableList.remove(kvp);
-            observableList.add(kvp);
-        });
+        observableList.removeIf(kvp -> key.equals(kvp.getKey()));
+        if (oList.size() > 0)
+            observableList.add(new KeyValuePair<>(key, oList));
     }
 
     @Override
@@ -63,7 +59,6 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
     @Override
     public boolean put(String key, Collection<Path> values) {
         Optional<List<Path>> optional = Optional.ofNullable(map.get(key));
-        boolean doit = true;
         if (optional.isPresent()) {
             List<Path> helper = optional.get();
             Path[] paths = values.parallelStream().filter(e -> !helper.contains(e)).toArray(Path[]::new);
@@ -83,8 +78,8 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
 
     @Override
     public ObservableList<Path> remove(Object key) {
-
         ObservableList<Path> list = super.remove(key);
+
         FileVisitor<Path> fileVisitor = new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -99,16 +94,16 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
 
             @Override
             public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-                if (exc != null)
-                    exc.printStackTrace();
                 return FileVisitResult.SKIP_SUBTREE;
             }
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                if (exc != null)
-                    exc.printStackTrace();
-                Files.delete(dir);
+                try {
+                    Files.delete(dir);
+                } catch (FileNotFoundException fnf) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
                 return FileVisitResult.CONTINUE;
             }
         };

@@ -95,7 +95,7 @@ public class SiGuiSettings implements Serializable {
         set(BooleanSettingKey.CB_SDK_TICKED, false);
         set(BooleanSettingKey.CB_LANGPACK_TICKED, false);
         set(StringSettingKey.DOWNLOADFOLDER, com.google.common.io.Files.createTempDir().toString());
-        set(BooleanSettingKey.RENAME_FILES, true);
+        set(BooleanSettingKey.RENAME_FILES, false);
         set(BooleanSettingKey.INSTALL_SUBFOLDER, true);
         set(BooleanSettingKey.EDIT_BOOTSTRAP, true);
         managerEntries = Collections.emptyMap();

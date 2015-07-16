@@ -11,13 +11,6 @@ public interface DownloadProgressInfo {
      */
     boolean hasStarted();
 
-    /**
-     * Sets the {@link #hasStarted()} to false
-     *
-     * @throws IllegalStateException
-     */
-    void resetHasStarted() throws IllegalStateException;
-
     long getTotalSizeInBytes();
 
     long getBytesTransferred();

@@ -1,6 +1,7 @@
 package at.reisisoft.sigui.ui.main;
 
 import at.reisisoft.sigui.OS;
+import at.reisisoft.sigui.ObjectProperty;
 import at.reisisoft.sigui.collection.CollectionHashMap;
 import at.reisisoft.sigui.installation.InstallationProvider;
 import at.reisisoft.sigui.installation.InstallationProviders;
@@ -9,7 +10,6 @@ import at.reisisoft.sigui.l10n.LocalisationSupport;
 import at.reisisoft.sigui.settings.SiGuiSettings;
 import at.reisisoft.sigui.ui.AdditionalFunctions;
 import at.reisisoft.sigui.ui.RunsOnJavaFXThread;
-import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -75,25 +76,30 @@ public class MainUiInstallTab extends Tab {
         startInstallation.setOnAction(event -> {
             startInstallation.setDisable(true);
             Runnable r = () -> {
+                final ObjectProperty<Path> installLocationProperty = new ObjectProperty<>();
                 Stream<String> stringStream = Stream.of(settings.get(SiGuiSettings.StringSettingKey.PATH_MAIN), settings.get(SiGuiSettings.StringSettingKey.PATH_HP), settings.get(SiGuiSettings.StringSettingKey.PATH_LANGPACK), settings.get(SiGuiSettings.StringSettingKey.PATH_SDK)).filter(Optional::isPresent).map(Optional::get).map(String::trim).filter(s -> s.length() > 0);
                 stringStream.map(s -> new CollectionHashMap.KeyValuePair<>(s, InstallationProviders.INSTALLATION_FACTORY)).forEach(kvp -> {
                     Optional<InstallationProvider> optional = kvp.getValue().getValue(OS.fromFileName(kvp.getKey()));
                     optional.ifPresent(installationProvider -> {
-                        MainUi.listeningExecutorService.submit(() -> {
-                            try {
-                                String filename = Paths.get(kvp.getKey()).getFileName().toString();
-                                filename = filename.substring(0, filename.lastIndexOf('.'));
-                                Path installLocation = getInstallLocation(settings, filename);
-                                installationProvider.install(Paths.get(kvp.getKey()), installLocation);
-                                AdditionalFunctions.addToManager(localisationSupport, window).accept(new CollectionHashMap.KeyValuePair<>(filename, installLocation));
-                                if (settings.get(SiGuiSettings.BooleanSettingKey.EDIT_BOOTSTRAP))
-                                    AdditionalFunctions.editBootstrap(localisationSupport).accept(installLocation);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }).addListener(() -> Platform.runLater(() -> installationFinishedFeedback(1d / max)), MoreExecutors.sameThreadExecutor());
+                        try {
+                            Path installLocation = installLocationProperty.get().orElseGet(() -> {
+                                Path p1 = getInstallLocation(settings, Paths.get(kvp.getKey()).getFileName().toString());
+                                installLocationProperty.set(p1);
+                                return p1;
+                            });
+                            String filename = installLocation.getFileName().toString();
+                            installationProvider.install(Paths.get(kvp.getKey()), installLocation);
+                            AdditionalFunctions.addToManager(localisationSupport, window).accept(new CollectionHashMap.KeyValuePair<>(filename, installLocation));
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            Platform.runLater(() -> installationFinishedFeedback(1d / max));
+                        }
                     });
                 });
+                if (settings.get(SiGuiSettings.BooleanSettingKey.EDIT_BOOTSTRAP))
+                    installLocationProperty.get().ifPresent(path -> AdditionalFunctions.editBootstrap(localisationSupport).accept(path));
                 Platform.runLater(() -> startInstallation.setDisable(false));
             };
             new Thread(r).start();
@@ -103,8 +109,24 @@ public class MainUiInstallTab extends Tab {
     private Path getInstallLocation(SiGuiSettings settings, String name) throws IllegalStateException {
         String path = settings.get(SiGuiSettings.StringSettingKey.INSTALL_PATH).orElseThrow(() -> new IllegalStateException(localisationSupport.getString(ExceptionTranslation.ADDITIONALINFONEEDED, localisationSupport.getString(MainUiSettingsTabTranslation.INSTALLPATH))));
         boolean shouldUseSubfolder = settings.get(SiGuiSettings.BooleanSettingKey.INSTALL_SUBFOLDER);
-        if (shouldUseSubfolder)
-            return Paths.get(path, name);
+        if (shouldUseSubfolder) {
+            int index;
+            index = name.lastIndexOf('.');
+            if (index > 0)
+                name = name.substring(0, index);
+            index = name.indexOf("helpp");
+            if (index > 0)
+                name = name.substring(0, index);
+            index = name.indexOf("sdk");
+            if (index > 0)
+                name = name.substring(0, index);
+            Path p = Paths.get(path, name);
+            int i = -1;
+            while (Files.exists(p))
+                p = Paths.get(path, name + '-' + ++i);
+            return p;
+        }
+
         return Paths.get(path);
 
     }
