@@ -159,35 +159,44 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                         String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElse(Files.createTempDir().toString());
                         List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
 
-                        final ObjectProperty<MainUiTranslation> eventType = new ObjectProperty<>();
+                        final HashMap<String, MainUiTranslation> eventType = new HashMap<>();
 
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
                             Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileMain(location);
-                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
-                                e.ifPresent(en -> en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            e.ifPresent(en -> {
+                                if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                    en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
+                                eventType.put(en.getFilename(), MainUiTranslation.INSTALLER_MAIN);
+                            });
                             entries.add(e);
-                            eventType.set(MainUiTranslation.INSTALLER_MAIN);
+
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
                             Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileHelp(location, lang);
-                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
-                                e.ifPresent(en -> en.setFilename("libo_help" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            e.ifPresent(en -> {
+                                if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                    en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
+                                eventType.put(en.getFilename(), MainUiTranslation.INSTALLER_HELP);
+                            });
                             entries.add(e);
-                            eventType.set(MainUiTranslation.INSTALLER_HELP);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
                             Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileSdk(location);
-                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
-                                e.ifPresent(en -> en.setFilename("libo_sdk" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            e.ifPresent(en -> {
+                                if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                    en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
+                                eventType.put(en.getFilename(), MainUiTranslation.INSTALLER_SDK);
+                            });
                             entries.add(e);
-                            eventType.set(MainUiTranslation.INSTALLER_SDK);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
                             Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileLangPack(location, lang);
-                            if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
-                                e.ifPresent(en -> en.setFilename("libo_langpack" + en.getFilename().substring(en.getFilename().lastIndexOf('.'))));
+                            e.ifPresent(en -> {
+                                if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
+                                    en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
+                                eventType.put(en.getFilename(), MainUiTranslation.INSTALLER_LANGPACK);
+                            });
                             entries.add(e);
-                            eventType.set(MainUiTranslation.INSTALLER_LANGPACK);
                         }
                         entries.stream().filter(Optional::isPresent).map(Optional::get).map(e -> {
                             e.setTo(Paths.get(dlPath, e.getFilename()));
@@ -197,11 +206,16 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                                 try {
                                     Optional<DownloadManager.Entry> text = lf.get();
                                     text.ifPresent(entry -> entry.getTo().ifPresent(path -> {
-                                        eventType.get().ifPresent(e -> {
-                                            MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), e, settings);
-                                            if (!downloadManager.getTotalDownloadProgress().hasStarted())
-                                                Platform.runLater(() -> progressBar.progressProperty().set(0d));
-                                        });
+                                        MainUiTranslation mainUiTranslation = eventType.get(entry.getFilename());
+                                        Platform.runLater(() -> {
+                                                    MainUiInstallTab.getInstance(localisationSupport, window).updatePath(path.toString(), mainUiTranslation, settings);
+                                                    if (!downloadManager.getTotalDownloadProgress().hasStarted()) {
+
+                                                        progressBar.progressProperty().set(0d);
+                                                        startDL.setDisable(false);
+                                                    }
+                                                }
+                                        );
                                     }));
                                 } catch (Exception e) {
                                     e.printStackTrace();

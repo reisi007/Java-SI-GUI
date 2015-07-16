@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Florian on 10.07.2015.
  */
-public class MainUi extends Application {
+public class MainUi extends Application implements AutoCloseable {
 
     private LocalisationSupport localisationSupport;
     private EnumMap<MainUITab, Tab> mainUITabs = new EnumMap<>(MainUITab.class);
@@ -77,12 +77,12 @@ public class MainUi extends Application {
     @Override
     public void stop() throws Exception {
         try {
-            List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport, w), MainUiManagerTab.getInstance(localisationSupport, w));
+            List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport, w), MainUiManagerTab.getInstance(localisationSupport, w), this);
             list.forEach(e -> {
                 try {
                     e.close();
                 } catch (Exception e1) {
-
+                    e1.printStackTrace();
                 }
             });
             getSettingsInstance().save(settingsPath, localisationSupport);
@@ -111,5 +111,10 @@ public class MainUi extends Application {
         }
         alert.setContentText(stringBuilder.toString());
         alert.showAndWait();
+    }
+
+    @Override
+    public void close() {
+        listeningExecutorService.shutdown();
     }
 }

@@ -24,7 +24,7 @@ public class WinShortcutTqElement extends AbstractShortcutTqElement {
             link.setIconLocation(destination.toFile().toString());
             link.setPath(destination.toFile().toString());
             link.save();
-            return Paths.get(link.getPath(), link.getName() + ".lnk");
+            return Paths.get(link.getFolder(), link.getName() + ".lnk");
         });
     }
 }

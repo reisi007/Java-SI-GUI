@@ -40,6 +40,7 @@ public class MainUiInstallTab extends Tab {
     private final Button startInstallation;
     private Map<MainUiTranslation, TextField> map = new EnumMap<>(MainUiTranslation.class);
 
+    @RunsOnJavaFXThread
     public void updatePath(String path, MainUiTranslation type, SiGuiSettings settings) {
         TextField tf = map.get(type);
         tf.setText(path);
