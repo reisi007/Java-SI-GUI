@@ -2,16 +2,15 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="SI-GUI-Testmain:jar" />
+      <artifact name="SI GUI:jar" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="83aca81c-c1d5-444d-ad94-5b59ae7a7a80" name="Default" comment="made downloadProgress working. Maybe a reset needed">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/AdditionalFunctions.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/AdditionalFunctions.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/LinuxShortcutTqElement.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/LinuxShortcutTqElement.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiManagerTab.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiManagerTab.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/ShortcutProvider.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/ShortcutProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/WinShortcutTqElement.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/WinShortcutTqElement.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/SI_GUI_jar.xml" />
+      <change type="DELETED" beforePath="D:\Github\Java-SI-GUI\.idea\artifacts\SI_GUI_Testmain_jar.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" afterPath="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SI GUI.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -53,21 +52,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WinShortcutTqElement.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WinShortcutTqElement.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/WinShortcutTqElement.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4069641">
+            <state vertical-scroll-proportion="0.0">
               <caret line="26" column="64" selection-start-line="26" selection-start-column="64" selection-end-line="26" selection-end-column="64" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainUi.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainUi.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.3112676">
+              <caret line="78" column="13" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -116,8 +115,8 @@
       <file leaf-file-name="MainUiDownloadTab.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="51" column="47" selection-start-line="51" selection-start-column="47" selection-end-line="51" selection-end-column="47" />
+            <state vertical-scroll-proportion="-7.793103">
+              <caret line="42" column="54" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -197,7 +196,6 @@
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadProgressInfo.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadProgressInputStream.java" />
-        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiInstallTab.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/manager/ManagerModel.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages_de.properties" />
@@ -208,6 +206,7 @@
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiManagerTab.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/LinuxShortcutTqElement.java" />
         <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/WinShortcutTqElement.java" />
+        <option value="$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java" />
       </list>
     </option>
   </component>
@@ -222,10 +221,10 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="884" />
+    <option name="y" value="434" />
+    <option name="width" value="960" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -251,6 +250,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -616,7 +616,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -624,14 +623,14 @@
     <property name="Downloaded.Files.Path.Enabled" value="false" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="dynamic.classpath" value="false" />
     <property name="FullScreen" value="false" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/xstream/xstream-1.4.8.jar!/" />
+    <property name="last_opened_file_path" value="D:/Desktop" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="settings.editor.selected.configurable" value="File.Encoding" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -842,8 +841,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="884" y="434" width="960" height="1040" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -853,10 +852,10 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20802534" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20730397" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.175" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3559322" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1133,7 +1132,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="48" column="9" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1141,7 +1139,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7051852">
           <caret line="97" column="49" selection-start-line="97" selection-start-column="49" selection-end-line="97" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1163,7 +1160,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37037036">
           <caret line="79" column="52" selection-start-line="79" selection-start-column="52" selection-end-line="79" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1171,33 +1167,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="78" column="21" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages_de.properties">
-      <provider selected="true" editor-type-id="ResourceBundle">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="47" selection-start-line="26" selection-start-column="47" selection-end-line="26" selection-end-column="47" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="ResourceBundle">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/downloader/DownloadManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="118" column="19" selection-start-line="118" selection-start-column="19" selection-end-line="118" selection-end-column="19" />
-          <folding>
-            <element signature="e#4849#4850#0" expanded="true" />
-            <element signature="e#4931#4932#0" expanded="true" />
-            <element signature="e#6490#6491#0" expanded="true" />
-            <element signature="e#6576#6577#0" expanded="true" />
-            <element signature="e#6814#6815#0" expanded="true" />
-            <element signature="e#6872#6873#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1205,41 +1191,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/Messages.properties">
-      <provider selected="true" editor-type-id="ResourceBundle">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="37" column="56" selection-start-line="37" selection-start-column="54" selection-end-line="37" selection-end-column="56" />
-          <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="ResourceBundle">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/l10n/LocalisationSupport.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="47" selection-start-line="51" selection-start-column="47" selection-end-line="51" selection-end-column="47" />
           <folding />
         </state>
       </provider>
@@ -1294,8 +1262,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/shortcut/WinShortcutTqElement.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4069641">
+        <state vertical-scroll-proportion="0.0">
           <caret line="26" column="64" selection-start-line="26" selection-start-column="64" selection-end-line="26" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUiDownloadTab.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.793103">
+          <caret line="42" column="54" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/at/reisisoft/sigui/ui/main/MainUi.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3112676">
+          <caret line="78" column="13" selection-start-line="78" selection-start-column="13" selection-end-line="78" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -1306,7 +1290,7 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
-          <last-edited>SI-GUI-Testmain:jar</last-edited>
+          <last-edited>SI GUI:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

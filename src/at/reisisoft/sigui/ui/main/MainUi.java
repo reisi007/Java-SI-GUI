@@ -77,7 +77,6 @@ public class MainUi extends Application {
     @Override
     public void stop() throws Exception {
         try {
-
             List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport, w), MainUiManagerTab.getInstance(localisationSupport, w));
             list.forEach(e -> {
                 try {
