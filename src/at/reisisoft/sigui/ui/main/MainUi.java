@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
@@ -42,43 +43,72 @@ public class MainUi extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        SiGuiSettings settings = getSettingsInstance();
-        Locale.setDefault(settings.getUserLanguage());
-        //Get localisation support
-        localisationSupport = LocalisationSupport.getInstance();
-        SiGuiSettings.setLocalisationSupport(localisationSupport);
-        w = primaryStage.getOwner();
-        //Configure tabbed layout
-        TabPane tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        Scene mainScene = new Scene(tabPane, 500, 300);
-        primaryStage.setScene(mainScene);
-        primaryStage.setResizable(false);
-        MainUITab[] tabs = MainUITab.values();
-        for (MainUITab uiTab : tabs) {
-            Tab cur = MainUiTabProvider.fillTab(uiTab, localisationSupport, w);
-            mainUITabs.put(uiTab, cur);
-            tabPane.getTabs().add(cur);
+    public void start(Stage primaryStage) {
+        try {
+            SiGuiSettings settings = getSettingsInstance();
+            Locale.setDefault(settings.getUserLanguage());
+            //Get localisation support
+            localisationSupport = LocalisationSupport.getInstance();
+            SiGuiSettings.setLocalisationSupport(localisationSupport);
+            w = primaryStage.getOwner();
+            //Configure tabbed layout
+            TabPane tabPane = new TabPane();
+            tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+            Scene mainScene = new Scene(tabPane, 500, 300);
+            primaryStage.setScene(mainScene);
+            primaryStage.setResizable(false);
+            MainUITab[] tabs = MainUITab.values();
+            for (MainUITab uiTab : tabs) {
+                Tab cur = MainUiTabProvider.fillTab(uiTab, localisationSupport, w);
+                mainUITabs.put(uiTab, cur);
+                tabPane.getTabs().add(cur);
+            }
+            //3 cherckboxes
+            //Set UI Strings
+            primaryStage.setTitle(localisationSupport.getString(MainUiTranslation.APP_NAME));
+            //Show stage
+            primaryStage.show();
+        } catch (Exception e) {
+            handleException(e);
         }
-        //3 cherckboxes
-        //Set UI Strings
-        primaryStage.setTitle(localisationSupport.getString(MainUiTranslation.APP_NAME));
-        //Show stage
-        primaryStage.show();
     }
 
     @Override
     public void stop() throws Exception {
-        List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport, w), MainUiManagerTab.getInstance(localisationSupport, w));
-        list.forEach(e -> {
-            try {
-                e.close();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
-        getSettingsInstance().save(settingsPath, localisationSupport);
-        super.stop();
+        try {
+
+            List<? extends AutoCloseable> list = Arrays.asList(MainUiDownloadTab.getInstance(localisationSupport, w), MainUiManagerTab.getInstance(localisationSupport, w));
+            list.forEach(e -> {
+                try {
+                    e.close();
+                } catch (Exception e1) {
+
+                }
+            });
+            getSettingsInstance().save(settingsPath, localisationSupport);
+
+        } catch (Exception e) {
+            handleException(e);
+        } finally {
+            super.stop();
+        }
+    }
+
+    public static void handleException(final Throwable e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(e.getClass().getCanonicalName());
+        alert.setHeaderText(e.getMessage());
+        StringBuilder stringBuilder = new StringBuilder();
+        Throwable cur = e;
+        while (cur != null) {
+            StackTraceElement[] stackTraceElements = cur.getStackTrace();
+            cur.printStackTrace();
+            for (StackTraceElement se : stackTraceElements)
+                stringBuilder.append(se).append('\n');
+            stringBuilder.append("\n\n");
+            cur = e.getCause();
+        }
+        alert.setContentText(stringBuilder.toString());
+        alert.showAndWait();
     }
 }

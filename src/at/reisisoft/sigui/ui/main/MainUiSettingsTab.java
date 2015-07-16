@@ -63,7 +63,7 @@ public class MainUiSettingsTab extends Tab {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         StringSettingKey[] skeys = new StringSettingKey[]{StringSettingKey.DOWNLOADFOLDER, StringSettingKey.SHORTCUTFOLDER, StringSettingKey.INSTALL_PATH};
-        BooleanSettingKey[] bkeys = new BooleanSettingKey[]{BooleanSettingKey.RENAME_FILES, BooleanSettingKey.INSTALL_SUBFOLDER};
+        BooleanSettingKey[] bkeys = new BooleanSettingKey[]{BooleanSettingKey.RENAME_FILES, BooleanSettingKey.INSTALL_SUBFOLDER, BooleanSettingKey.EDIT_BOOTSTRAP};
         //Create UI
         for (StringSettingKey key : skeys) {
             HBox cur = new HBox(8);
@@ -178,6 +178,8 @@ public class MainUiSettingsTab extends Tab {
                 return MainUiSettingsTabTranslation.RENAMEFILES;
             case INSTALL_SUBFOLDER:
                 return MainUiSettingsTabTranslation.INSTALLSUBFOLDER;
+            case EDIT_BOOTSTRAP:
+                return MainUiSettingsTabTranslation.BOOTSTRAP_EDIT;
             default:
                 throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, "key"));
         }
@@ -202,6 +204,8 @@ public class MainUiSettingsTab extends Tab {
                 return MainUiSettingsTabTranslation.RENAMEFILES_TOOLTIP;
             case INSTALL_SUBFOLDER:
                 return MainUiSettingsTabTranslation.INSTALLSUBFOLDER_TOOLTIP;
+            case EDIT_BOOTSTRAP:
+                return MainUiSettingsTabTranslation.BOOTSTRAP_EDIT_TOOLTIP;
             default:
                 throw new IllegalArgumentException(localisationSupport.getString(ExceptionTranslation.ILLEGALARGUMENT_UNKNOWN, "key"));
         }

@@ -86,6 +86,8 @@ public class MainUiInstallTab extends Tab {
                                 Path installLocation = getInstallLocation(settings, filename);
                                 installationProvider.install(Paths.get(kvp.getKey()), installLocation);
                                 AdditionalFunctions.addToManager(localisationSupport, window).accept(new CollectionHashMap.KeyValuePair<>(filename, installLocation));
+                                if (settings.get(SiGuiSettings.BooleanSettingKey.EDIT_BOOTSTRAP))
+                                    AdditionalFunctions.editBootstrap(localisationSupport).accept(installLocation);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
