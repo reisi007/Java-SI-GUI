@@ -29,12 +29,13 @@ public class AdditionalFunctions {
         return kvp -> MainUiManagerTab.getInstance(localisationSupport, window).getModel().put(kvp);
     }
 
-    public static Consumer<CollectionHashMap.KeyValuePair<String, Path>> createShortCut(SiGuiSettings settings) {
+    public static Consumer<CollectionHashMap.KeyValuePair<String, Path>> createShortCut(SiGuiSettings settings, LocalisationSupport localisationSupport, Window window) {
         return kvp -> {
             ShortcutProviders.SHORTCUT_FACTORY.getValue(settings.getOSs().get(0)).ifPresent(shortcutProvider -> {
                 Path shortcutfolder = Paths.get(settings.get(SiGuiSettings.StringSettingKey.SHORTCUTFOLDER).orElseGet(() -> Paths.get(System.getProperty("user.home")).toString()));
                 try {
-                    shortcutProvider.createShortcut(shortcutfolder, kvp.getKey(), kvp.getValue(), "");
+                    Path actualLocation = shortcutProvider.createShortcut(shortcutfolder, kvp.getKey(), kvp.getValue(), "");
+                    MainUiManagerTab.getInstance(localisationSupport, window).getModel().put(kvp.getKey(), actualLocation);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

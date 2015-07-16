@@ -14,7 +14,8 @@ public interface ShortcutProvider {
      * @param name        Name of the shortcut
      * @param destination The destination of he URL link
      * @param comment     If possible, have a comment / tooltip associated with the shortcut
+     * @return Shortcut location
      * @throws IOException
      */
-    void createShortcut(Path path, String name, Path destination, String comment) throws IOException;
+    Path createShortcut(Path path, String name, Path destination, String comment) throws IOException;
 }

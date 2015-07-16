@@ -79,7 +79,7 @@ public class MainUiManagerTab extends Tab implements AutoCloseable {
         createShortCut.setOnAction(event -> {
             CollectionHashMap.KeyValuePair<String, ObservableList<Path>> selectedItem = tableView.getSelectionModel().getSelectedItem();
             Path val = getSofficePath(selectedItem.getValue(), settings.getOSs().get(0));
-            AdditionalFunctions.createShortCut(settings).accept(new CollectionHashMap.KeyValuePair<>(selectedItem.getKey(), getSofficePath(selectedItem.getValue(), settings.getOSs().get(0))));
+            AdditionalFunctions.createShortCut(settings,localisationSupport,window).accept(new CollectionHashMap.KeyValuePair<>(selectedItem.getKey(), getSofficePath(selectedItem.getValue(), settings.getOSs().get(0))));
         });
         MenuItem deleteCur = new MenuItem(localisationSupport.getString(MainUiTranslation.MANAGER_DELETE));
         deleteCur.setOnAction(event1 -> {

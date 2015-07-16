@@ -3,6 +3,7 @@ package at.reisisoft.sigui.shortcut;
 import at.reisisoft.sigui.OS;
 import net.jimmc.jshortcut.JShellLink;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -23,6 +24,7 @@ public class WinShortcutTqElement extends AbstractShortcutTqElement {
             link.setIconLocation(destination.toFile().toString());
             link.setPath(destination.toFile().toString());
             link.save();
+            return Paths.get(link.getPath(), link.getName() + ".lnk");
         });
     }
 }

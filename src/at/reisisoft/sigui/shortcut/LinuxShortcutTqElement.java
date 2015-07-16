@@ -5,6 +5,7 @@ import at.reisisoft.sigui.OS;
 import java.io.BufferedWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -23,9 +24,11 @@ public class LinuxShortcutTqElement extends AbstractShortcutTqElement {
             sb.append("Terminal=false").append('\n');
             sb.append("Type=Application").append('\n');
             sb.append("Comment=").append(comment);
-            try (BufferedWriter writer = Files.newBufferedWriter(path.resolve(name + ".desktop"), Charset.forName("utf-8"));) {
+            Path dest = path.resolve(name + ".desktop");
+            try (BufferedWriter writer = Files.newBufferedWriter(dest, Charset.forName("utf-8"))) {
                 writer.write(sb.toString());
             }
+            return dest;
         });
 
     }
