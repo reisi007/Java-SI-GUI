@@ -125,6 +125,8 @@ public class MainUiSettingsTab extends Tab {
         mainContent.getChildren().add(new HBox(8, l10Label, l10n));
         Label arch = new Label(localisationSupport.getString(MainUiSettingsTabTranslation.ARCH)), os = new Label(localisationSupport.getString(MainUiSettingsTabTranslation.OS));
         CheckComboBox<Architecture> archBox = new CheckComboBox<>(FXCollections.observableArrayList(Architecture.values()));
+
+
         CheckComboBox<OS> osBox = new CheckComboBox<>(FXCollections.observableArrayList(OS.detect()));
         osBox.setConverter(new StringConverter<OS>() {
             Map<String, OS> map = new HashMap<>();
@@ -152,6 +154,8 @@ public class MainUiSettingsTab extends Tab {
         obsArch.addListener((ListChangeListener<Architecture>) c -> {
             settings.setArchitectures(new ArrayList<>(obsArch));
         });
+        settings.getOSs().forEach(osBox.getCheckModel()::check);
+        settings.getArchitectures().forEach(archBox.getCheckModel()::check);
 
     }
 
