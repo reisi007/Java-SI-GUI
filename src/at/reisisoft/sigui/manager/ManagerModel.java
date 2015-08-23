@@ -79,7 +79,7 @@ public class ManagerModel extends AbstractCollectionHashMap<String, ObservableLi
     @Override
     public ObservableList<Path> remove(Object key) {
         ObservableList<Path> list = super.remove(key);
-
+        observableList.removeIf(kvp -> key.equals(kvp.getKey()));
         FileVisitor<Path> fileVisitor = new FileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {

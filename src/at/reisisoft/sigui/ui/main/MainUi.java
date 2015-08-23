@@ -15,10 +15,7 @@ import javafx.stage.Window;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.Executors;
 
 /**

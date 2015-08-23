@@ -19,9 +19,9 @@ public abstract class AbstractInstallationTqElement extends AbstractTqElement<OS
      */
     @Override
     public AbstractInstallationTqElement setNext(AbstractInstallationTqElement next) {
-        if (next.getPrevious().orElse(null) != this)
-            next.setPrevious(this);
+        next.setPrevious(this);
         return super.setNext(next);
+
     }
 
     @Override

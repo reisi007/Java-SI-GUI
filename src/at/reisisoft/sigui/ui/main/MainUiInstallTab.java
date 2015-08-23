@@ -79,7 +79,7 @@ public class MainUiInstallTab extends Tab {
             Runnable r = () -> {
                 final ObjectProperty<Path> installLocationProperty = new ObjectProperty<>();
                 Stream<String> stringStream = Stream.of(settings.get(SiGuiSettings.StringSettingKey.PATH_MAIN), settings.get(SiGuiSettings.StringSettingKey.PATH_HP), settings.get(SiGuiSettings.StringSettingKey.PATH_LANGPACK), settings.get(SiGuiSettings.StringSettingKey.PATH_SDK)).filter(Optional::isPresent).map(Optional::get).map(String::trim).filter(s -> s.length() > 0);
-                stringStream.map(s -> new CollectionHashMap.KeyValuePair<>(s, InstallationProviders.INSTALLATION_FACTORY)).forEach(kvp -> {
+                stringStream.map(s -> new CollectionHashMap.KeyValuePair<>(s, InstallationProviders.getInstallationFactory())).forEach(kvp -> {
                     Optional<InstallationProvider> optional = kvp.getValue().getValue(OS.fromFileName(kvp.getKey()));
                     optional.ifPresent(installationProvider -> {
                         try {
