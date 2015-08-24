@@ -2,12 +2,14 @@
   <library name="org.controlsfx:controlsfx:8.40.9" type="repository">
     <properties maven-id="org.controlsfx:controlsfx:8.40.9" />
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/org/controlsfx/controlsfx/8.40.9/controlsfx-8.40.9.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/controlsfx/openjfx-dialogs/1.0.3/openjfx-dialogs-1.0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/openjfx-dialogs-1.0.3.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/org/controlsfx/controlsfx/8.40.9/controlsfx-8.40.9-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.9-javadoc.jar!/" />
     </JAVADOC>
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/controlsfx-8.40.9-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

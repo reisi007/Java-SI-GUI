@@ -156,13 +156,13 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                     getAccordeonDlLocation().ifPresent(location -> {
                         Platform.runLater(() -> startDL.setDisable(true));
                         String lang = languages.selectionModelProperty().get().getSelectedItem();
-                        String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElse(Files.createTempDir().toString());
+                        String dlPath = settings.get(SiGuiSettings.StringSettingKey.DOWNLOADFOLDER).orElseGet(() -> Files.createTempDir().toString());
                         List<Optional<DownloadManager.Entry>> entries = new LinkedList<>();
 
                         final HashMap<String, MainUiTranslation> eventType = new HashMap<>();
 
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_MAIN_TICKED)) {
-                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileMain(location);
+                            Optional<DownloadManager.Entry> e = DownloadHelper.getDownloadFileMain(location);
                             e.ifPresent(en -> {
                                 if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
                                     en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
@@ -172,7 +172,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
 
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_HELP_TICKED)) {
-                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileHelp(location, lang);
+                            Optional<DownloadManager.Entry> e = DownloadHelper.getDownloadFileHelp(location, lang);
                             e.ifPresent(en -> {
                                 if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
                                     en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
@@ -181,7 +181,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                             entries.add(e);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_SDK_TICKED)) {
-                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileSdk(location);
+                            Optional<DownloadManager.Entry> e = DownloadHelper.getDownloadFileSdk(location);
                             e.ifPresent(en -> {
                                 if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
                                     en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));
@@ -190,7 +190,7 @@ public class MainUiDownloadTab extends Tab implements AutoCloseable {
                             entries.add(e);
                         }
                         if (settings.get(SiGuiSettings.BooleanSettingKey.CB_LANGPACK_TICKED)) {
-                            Optional<DownloadManager.Entry> e = DownloafHelper.getDownloadFileLangPack(location, lang);
+                            Optional<DownloadManager.Entry> e = DownloadHelper.getDownloadFileLangPack(location, lang);
                             e.ifPresent(en -> {
                                 if (settings.get(SiGuiSettings.BooleanSettingKey.RENAME_FILES))
                                     en.setFilename("libo_main" + en.getFilename().substring(en.getFilename().lastIndexOf('.')));

@@ -52,7 +52,7 @@ public class MainUi extends Application implements AutoCloseable {
             //Configure tabbed layout
             TabPane tabPane = new TabPane();
             tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-            Scene mainScene = new Scene(tabPane, 500, 300);
+            Scene mainScene = new Scene(tabPane, 550, 350);
             primaryStage.setScene(mainScene);
             primaryStage.setResizable(false);
             MainUITab[] tabs = MainUITab.values();
